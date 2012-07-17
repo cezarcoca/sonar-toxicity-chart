@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<toxicity>
+  <source total="1.3" name="net.sf.jmoney.entrytable.EntriesTable">
+    <debt cost="1.3" key="Cyclomatic complexity"/>
+  </source>
+  <source total="22.25" name="net.sf.jmoney.entrytable.VirtualRowTable">
+    <debt cost="2.945" key="File length"/>
+    <debt cost="16.86" key="Method length"/>
+    <debt cost="2.443" key="Cyclomatic complexity"/>
+  </source>
+</toxicity>

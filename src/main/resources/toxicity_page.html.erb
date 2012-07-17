@@ -1,0 +1,200 @@
+<%
+  require 'rexml/rexml'
+  require 'rexml/document'
+  if !@snapshot.nil? && @snapshot.root_snapshot.measure("toxicity-chart-status")
+    metric_ref = metric('toxicity-chart-status');
+    measure_ref = measure('toxicity-chart-status');
+    threshold = BigDecimal.new(configuration('threshold', "1"));
+%>
+<script language="javascript">
+  function toggle(index) {
+    var name = document.getElementById("toggleName_" + index);
+    var cost = document.getElementById("toggleCost_" + index);
+    if(name.style.display == "block") {
+      name.style.display = "none";
+      cost.style.display = "none";
+    } else {
+      name.style.display = "block";
+      cost.style.display = "block";
+    }
+  }
+</script>
+<style>
+  .rectangle{width:10px;height:10px;border:1px solid #DDD;float:left;margin-top:2px;margin-left:5px;margin-right:5px}
+</style>
+<div style="margin:0 auto;width:1024px;display:block">
+  <div class="dashbox">
+  <div>
+    <%=chart('ck=toxicitychart&w=1024&h=576&v=' + measure_ref.id.to_s) %>
+  </div>
+  <div id="dashboard">
+    <div class="widget">
+      <table widith="100%">
+        <tr>
+          <td width="25%">
+            <div class="rectangle" style="background-color:#FFFFFF" ></div>
+            <div style="float:left">
+              <div>Average value</div>
+              <span class="big"><%= measure('toxicity-chart-average').value.to_f%><%= tendency_icon('toxicity-chart-average') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td width="25%">
+            <div class="rectangle" style="background-color:#4198AF" ></div>
+            <div style="float:left">
+              <div>File length</div>
+              <span class="big"><%= measure('toxicity-chart-file-length').value.to_f%><%= tendency_icon('toxicity-chart-file-length') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td width="25%">
+            <div class="rectangle" style="background-color:#DB843D" ></div>
+            <div style="float:left">
+              <div>Method length</div>
+              <span class="big"><%= measure('toxicity-chart-method-length').value.to_f%><%= tendency_icon('toxicity-chart-method-length') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td width="25%">
+            <div class="rectangle" style="background-color:#71588F" ></div>
+            <div style="float:left">
+              <div>Cyclomatic complexity</div>
+              <span class="big"><%= measure('toxicity-chart-cyclomatic-complexity').value.to_f%><%= tendency_icon('toxicity-chart-cyclomatic-complexity') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="rectangle" style="background-color:#9999FF" ></div>
+            <div style="float:left">
+              <div>Boolean expression complexity</div>
+              <span class="big"><%= measure('toxicity-chart-boolean-expression-complexity').value.to_f%><%= tendency_icon('toxicity-chart-boolean-expression-complexity') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td>
+            <div class="rectangle" style="background-color:#B9CD96" ></div>
+            <div style="float:left">
+              <div>Parameter number</div>
+              <span class="big"><%= measure('toxicity-chart-parameter-number').value.to_f%><%= tendency_icon('toxicity-chart-parameter-number') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td>
+            <div class="rectangle" style="background-color:#AA4643" ></div>
+            <div style="float:left">
+              <div>Class data abstraction coupling</div>
+              <span class="big"><%= measure('toxicity-chart-class-data-abstraction-coupling').value.to_f%><%= tendency_icon('toxicity-chart-class-data-abstraction-coupling') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td>
+            <div class="rectangle" style="background-color:#89A54E" ></div>
+            <div style="float:left">
+              <div>Class fan out complexity</div>
+              <span class="big"><%= measure('toxicity-chart-class-fan-out-complexity').value.to_f%><%= tendency_icon('toxicity-chart-class-fan-out-complexity') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="rectangle" style="background-color:#93A9CF" ></div>
+            <div style="float:left">
+              <div>Nested if depth</div>
+              <span class="big"><%= measure('toxicity-chart-nested-if-depth').value.to_f%><%= tendency_icon('toxicity-chart-nested-if-depth') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td>
+            <div class="rectangle" style="background-color:#BB9C68" ></div>
+            <div style="float:left">
+              <div>Nested try depth</div>
+              <span class="big"><%= measure('toxicity-chart-nested-try-depth').value.to_f%><%= tendency_icon('toxicity-chart-nested-try-depth') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td>
+            <div class="rectangle" style="background-color:#A99BBD" ></div>
+            <div style="float:left">
+              <div>Missing switch default</div>
+              <span class="big"><%= measure('toxicity-chart-missing-switch-default').value.to_f%><%= tendency_icon('toxicity-chart-missing-switch-default') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+          <td>
+            <div class="rectangle" style="background-color:#D19392" ></div>
+            <div style="float:left">
+              <div>Anon inner length</div>
+              <span class="big"><%= measure('toxicity-chart-anon-inner-length').value.to_f%><%= tendency_icon('toxicity-chart-anon-inner-length') -%></span>
+            </div>
+            <div style="clear" ></div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <table class="data" summary="Toxicty Chart Legend">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th>Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%
+        doc = REXML::Document.new(measure_ref.data.to_s);
+        index = 1;
+        doc.elements.each("toxicity/source") { |source|
+        if BigDecimal.new(source.attributes["total"]) < threshold then
+          break
+        end
+        rowClass = ((index % 2) == 0) ? "even" : "odd";
+        debtsName = "toggleName_" + index.to_s
+        debtsCost = "toggleCost_" + index.to_s
+      %>
+      <tr class=<%=rowClass %>>
+        <td>
+          <%= index %>
+        </td>
+        <td>
+          <a id="sourceName" href="javascript:toggle(<%= index %>);"><%= source.attributes["name"] %></a>
+          <div id=<%= debtsName %> style="display: none">
+              <% source.elements.each("debt") { |debt| %>
+                <div>
+                  <div class="rectangle" style='background-color:<%= debt.attributes["color"] %>'></div>
+                  <div style="float:left">
+                    <%= debt.attributes["key"] %>
+                  </div>
+                </div>
+                <div class="clear" ></div>
+              <% } %>
+          </div>
+        </td>
+        <td>
+          <b><%= source.attributes["total"] %></b>
+          <div id=<%= debtsCost %> style="display: none">
+            <ul>
+              <% source.elements.each("debt") { |debt| %>
+                <div>
+                  <%= debt.attributes["cost"] %>
+                </div>
+              <% } %>
+            </ul>
+          </div>
+        </td>
+      </tr>
+      <%
+        index += 1
+        }
+      %>
+    </tbody>
+  </table>
+ </div>
+</div>
+<%
+  end
+%>
