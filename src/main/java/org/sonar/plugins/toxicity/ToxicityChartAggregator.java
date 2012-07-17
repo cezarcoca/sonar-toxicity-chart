@@ -47,7 +47,6 @@ public class ToxicityChartAggregator extends Initializer implements PostJob {
     @Override
     public void execute(Project project) {
 
-        LOGGER.info("Project {} initialized successfully.", project.getLongName());
         debtsFilter = new DebtsFilter();
     }
 

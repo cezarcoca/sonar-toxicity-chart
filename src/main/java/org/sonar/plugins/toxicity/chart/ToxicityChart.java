@@ -20,6 +20,8 @@
 
 package org.sonar.plugins.toxicity.chart;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.apache.commons.configuration.Configuration;
 import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
@@ -166,7 +168,8 @@ public class ToxicityChart extends AbstractChart {
         return data;
     }
 
-    private BigDecimal getThreshold() {
+    @VisibleForTesting
+    BigDecimal getThreshold() {
 
         String threshold = configuration.getString(
                 ToxicityChartPlugin.TC_THRESHOLD,

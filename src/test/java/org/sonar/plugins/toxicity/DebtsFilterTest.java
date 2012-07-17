@@ -20,11 +20,20 @@
 
 package org.sonar.plugins.toxicity;
 
+import org.junit.Test;
 import org.sonar.api.resources.Resource;
-
 import org.sonar.api.rules.Rule;
-
 import org.sonar.api.rules.Violation;
+import org.sonar.plugins.toxicity.debts.ViolationsMapper;
+import org.sonar.plugins.toxicity.model.Source;
+import org.sonar.plugins.toxicity.model.Toxicity;
+
+import java.math.BigDecimal;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author ccoca
@@ -32,12 +41,50 @@ import org.sonar.api.rules.Violation;
  */
 public class DebtsFilterTest {
 
-    public void givenMatchingViolationWhenInvokeFilterThenToxicityShouldBeUpdated() {
+    private static final String SECOND = "second";
+    private static final String FIRST = "first";
+    private static final String THIRD = "third";
+    private static final String MESSAGE_FILE_LENGTH = "Method length is 270 lines (max allowed is 30).";
 
+    @Test
+    public void whenInvokeFilterThenToxicityShouldBeUpdated() {
+
+        Violation v1 = createViolation(MESSAGE_FILE_LENGTH, ViolationsMapper.FILE_LENGTH_CHECK_STYLE, FIRST);
+        Violation v2 = createViolation("", ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE, FIRST);
+        Violation v3 = createViolation("", ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE, SECOND);
+        Violation v4 = createViolation("", "", THIRD);
+
+        DebtsFilter debtsFilter = new DebtsFilter();
+
+        debtsFilter.filter(v1);
+        debtsFilter.filter(v2);
+        debtsFilter.filter(v3);
+        debtsFilter.filter(v4);
+
+        Toxicity toxicity = debtsFilter.getToxicity();
+
+        assertEquals(2, toxicity.getSources().size());
+
+        Source first = toxicity.getSources().get(0);
+
+        assertEquals(FIRST, first.getName());
+        assertEquals(2, first.getDebts().size());
+        assertTrue(BigDecimal.TEN.compareTo(first.getTotal()) == 0);
+
+        Source second = toxicity.getSources().get(1);
+        assertEquals(SECOND, second.getName());
+        assertEquals(1, second.getDebts().size());
+        assertTrue(BigDecimal.ONE.compareTo(second.getTotal()) == 0);
     }
 
-    private Violation createViolation(String ruleKey, String resourceName) {
+    private Violation createViolation(String message, String ruleKey, String resourceName) {
 
-        return Violation.create(Rule.create("", ruleKey, ""), null);
+        Resource<?> resource  = mock(Resource.class);
+        when(resource.getLongName()).thenReturn(resourceName);
+
+        Violation violation = Violation.create(Rule.create("", ruleKey, ""), resource);
+        violation.setMessage(message);
+
+        return violation;
     }
 }
