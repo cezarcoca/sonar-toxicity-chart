@@ -49,14 +49,23 @@ public class ToxicityChartPlugin implements Plugin {
         LOGGER.debug("Toxicity Chart Plugin successfully created.");
     }
 
+    /**
+     * @return the plugin name
+     */
     public String getName() {
         return PLUGIN_NAME;
     }
 
+    /**
+     * @return the plugin description
+     */
     public String getDescription() {
         return PLUGIN_NAME;
     }
 
+    /**
+     * @return the list of extensions of the plugin
+     */
     public List<Class<? extends Extension>> getExtensions() {
         List<Class<? extends Extension>> extensions = new ArrayList<Class<? extends Extension>>();
         extensions.add(ToxicityChartDecorator.class);
@@ -67,6 +76,9 @@ public class ToxicityChartPlugin implements Plugin {
         return extensions;
     }
 
+    /**
+     * @return the plugin key
+     */
     public String getKey() {
         return PLUGIN_KEY;
     }

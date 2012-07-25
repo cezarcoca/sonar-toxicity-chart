@@ -22,10 +22,9 @@ package org.sonar.plugins.toxicity;
 
 import com.google.common.base.Preconditions;
 
-import org.sonar.plugins.toxicity.model.DebtType;
-
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Metric;
+import org.sonar.plugins.toxicity.model.DebtType;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -43,7 +42,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart metric
      */
     public static final Metric TOXICITY_STATUS = new Metric(
-            "toxicity-chart-status", "Toxicity Chart Status",
+            "toxicity_chart_status", "Toxicity Chart Status",
             "XML representation of project's toxicity.", Metric.ValueType.DATA,
             1, true, CoreMetrics.DOMAIN_GENERAL);
 
@@ -51,7 +50,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart average value
      */
     public static final Metric TOXICITY_AVERAGE_VALUE = new Metric(
-            "toxicity-chart-average", "Toxicity Chart average value",
+            "toxicity_chart_average", "Toxicity Chart average value",
             "Toxicity Chart average value.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -59,7 +58,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart boolean expression complexity
      */
     public static final Metric TOXICITY_BOOLEAN_EXPRESSION_COMPLEXITY_VALUE = new Metric(
-            "toxicity-chart-boolean-expression-complexity", "Toxicity Chart boolean expression complexity",
+            "toxicity_chart_boolean_expression_complexity", "Toxicity Chart boolean expression complexity",
             "Toxicity Chart boolean expression complexity.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -67,7 +66,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart class data abstraction coupling
      */
     public static final Metric TOXICITY_CLASS_DATA_ABSTRACTION_COUPLING_VALUE = new Metric(
-            "toxicity-chart-class-data-abstraction-coupling", "Toxicity Chart class data abstraction coupling",
+            "toxicity_chart_class_data_abstraction_coupling", "Toxicity Chart class data abstraction coupling",
             "Toxicity Chart class data abstraction coupling.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -75,7 +74,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart class fan out complexity
      */
     public static final Metric TOXICITY_CLASS_FAN_OUT_COMPLEXITY_VALUE = new Metric(
-            "toxicity-chart-class-fan-out-complexity", "Toxicity Chart class fan out complexity",
+            "toxicity_chart_class_fan_out_complexity", "Toxicity Chart class fan out complexity",
             "Toxicity Chart class fan out complexity.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -83,7 +82,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart cyclomatic complexity
      */
     public static final Metric TOXICITY_CYCLOMATIC_COMPLEXITY_VALUE = new Metric(
-            "toxicity-chart-cyclomatic-complexity", "Toxicity Chart cyclomatic complexity",
+            "toxicity_chart_cyclomatic_complexity", "Toxicity Chart cyclomatic complexity",
             "Toxicity Chart cyclomatic complexity.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -91,7 +90,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart file length
      */
     public static final Metric TOXICITY_FILE_LENGTH_VALUE = new Metric(
-            "toxicity-chart-file-length", "Toxicity Chart file length",
+            "toxicity_chart_file_length", "Toxicity Chart file length",
             "Toxicity Chart file length.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -99,7 +98,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart method length
      */
     public static final Metric TOXICITY_METHOD_LENGTH_VALUE = new Metric(
-            "toxicity-chart-method-length", "Toxicity Chart method length",
+            "toxicity_chart_method_length", "Toxicity Chart method length",
             "Toxicity Chart method length.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -107,7 +106,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart nested if depth
      */
     public static final Metric TOXICITY_NESTED_IF_DEPTH_VALUE = new Metric(
-            "toxicity-chart-nested-if-depth", "Toxicity Chart nested if depth",
+            "toxicity_chart_nested_if_depth", "Toxicity Chart nested if depth",
             "Toxicity Chart nested if depth.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -115,7 +114,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart nested try depth
      */
     public static final Metric TOXICITY_NESTED_TRY_DEPTH_VALUE = new Metric(
-            "toxicity-chart-nested-try-depth", "Toxicity Chart nested try depth",
+            "toxicity_chart_nested_try_depth", "Toxicity Chart nested try depth",
             "Toxicity Chart nested try depth.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -123,7 +122,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart anon inner length
      */
     public static final Metric TOXICITY_ANON_INNER_LENGTH_VALUE = new Metric(
-            "toxicity-chart-anon-inner-length", "Toxicity Chart anon inner length",
+            "toxicity_chart_anon_inner_length", "Toxicity Chart anon inner length",
             "Toxicity Chart anon inner length.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -131,7 +130,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart parameter number
      */
     public static final Metric TOXICITY_PARAMETER_NUMBER_VALUE = new Metric(
-            "toxicity-chart-parameter-number", "Toxicity Chart parameter number",
+            "toxicity_chart_parameter_number", "Toxicity Chart parameter number",
             "Toxicity Chart parameter number.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -139,7 +138,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      * The Toxicity Chart missing switch default
      */
     public static final Metric TOXICITY_MISSING_SWITCH_DEFAULT_VALUE = new Metric(
-            "toxicity-chart-missing-switch-default", "Toxicity Chart missing switch default",
+            "toxicity_chart_missing_switch_default", "Toxicity Chart missing switch default",
             "Toxicity Chart missing switch default.", Metric.ValueType.FLOAT, -1, true,
             CoreMetrics.DOMAIN_RULES);
 
@@ -186,7 +185,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
      */
     static final Metric getMetricByDebtType(DebtType debt) {
 
-        Preconditions.checkArgument(debt != DebtType.UNKNOWN, "Invalid argument: ", debt);
+        Preconditions.checkNotNull(debt);
 
         return METRICS.get(debt);
     }

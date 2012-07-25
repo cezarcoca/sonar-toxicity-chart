@@ -42,9 +42,9 @@ public class SourceTest {
     public void whenCompareIsInvokedThenDescResultShouldBeReturned() {
 
         Source one = new Source("one");
-        one.addDebt(new Debt(BigDecimal.ONE, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
+        one.addDebt(ModelUtil.createDebt(BigDecimal.ONE, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
         Source two = new Source("two");
-        two.addDebt(new Debt(BigDecimal.TEN, DebtType.ANON_INNER_LENGTH));
+        two.addDebt(ModelUtil.createDebt(BigDecimal.TEN, DebtType.ANON_INNER_LENGTH));
 
         Assert.assertEquals(1, one.compareTo(null));
         Assert.assertEquals(1, one.compareTo(two));
@@ -61,8 +61,8 @@ public class SourceTest {
         BigDecimal total = booleanComplexityCost.add(annonInnerLengthCost);
 
         Source source = new Source("compile.unit");
-        source.addDebt(new Debt(booleanComplexityCost, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
-        source.addDebt(new Debt(annonInnerLengthCost, DebtType.ANON_INNER_LENGTH));
+        source.addDebt(ModelUtil.createDebt(booleanComplexityCost, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
+        source.addDebt(ModelUtil.createDebt(annonInnerLengthCost, DebtType.ANON_INNER_LENGTH));
 
         Assert.assertEquals(total, source.getTotal());
     }

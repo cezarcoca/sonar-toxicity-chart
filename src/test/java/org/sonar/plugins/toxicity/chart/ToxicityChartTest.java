@@ -20,6 +20,10 @@
 
 package org.sonar.plugins.toxicity.chart;
 
+import org.sonar.api.charts.ChartParameters;
+
+import org.sonar.plugins.toxicity.dao.MeasureDao;
+
 import org.apache.commons.configuration.Configuration;
 import org.junit.Test;
 import org.sonar.plugins.toxicity.ToxicityChartPlugin;
@@ -50,6 +54,22 @@ public class ToxicityChartTest {
         assertTrue(new BigDecimal(ToxicityChartPlugin.TC_THRESHOLD_DEFAULT).compareTo(chart.getThreshold()) == 0);
     }
 
+    @Test
+    public void givenInvalidMeasureIdWhenGetPlotIsInvokedThenNoExceptionIsThrown() {
+
+        String id = "1";
+
+        ChartParameters params = mock(ChartParameters.class);
+        when(params.getValue(ToxicityChart.MEASURE_ID)).thenReturn(id);
+
+        MeasureDao dao = mock(MeasureDao.class);
+        when(dao.getMeasureDataById(id)).thenReturn(null);
+
+        ToxicityChart chart = new ToxicityChart(null, createMockConfiguration("10.0"));
+        chart.setDao(dao);
+
+        chart.getPlot(params);
+    }
 
     private Configuration createMockConfiguration(String returnedValue) {
 

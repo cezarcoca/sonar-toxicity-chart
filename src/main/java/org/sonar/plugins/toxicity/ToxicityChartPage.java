@@ -28,14 +28,23 @@ import org.sonar.api.web.RubyRailsPage;
 public class ToxicityChartPage extends AbstractRubyTemplate implements
         RubyRailsPage {
 
+    /**
+     * @return the page id
+     */
     public String getId() {
         return ToxicityChartPlugin.PLUGIN_KEY;
     }
 
+    /**
+     * @return the page title
+     */
     public String getTitle() {
         return ToxicityChartPlugin.PLUGIN_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getTemplatePath() {
         return "/toxicity_page.html.erb";

@@ -35,8 +35,8 @@ public class DebtTest {
     @Test
     public void givenTwoEquivalentDebtsWhenCallEqualThenTrueShouldBeReturned() {
 
-        Debt first = new Debt(new BigDecimal("10.0"), DebtType.UNKNOWN);
-        Debt second = new Debt(new BigDecimal("10.000"), DebtType.UNKNOWN);
+        Debt first = ModelUtil.createDebt(new BigDecimal("10.0"), DebtType.METHOD_LENGTH);
+        Debt second = ModelUtil.createDebt(new BigDecimal("10.000"), DebtType.METHOD_LENGTH);
 
         Assert.assertTrue(first.equals(second));
         Assert.assertEquals(first.hashCode(), second.hashCode());
@@ -45,24 +45,19 @@ public class DebtTest {
     @Test
     public void givenTwoNotEquivalentDebtsWhenCallEqualThenFalseShouldBeReturned() {
 
-        Debt first = new Debt(new BigDecimal("10.01"), DebtType.UNKNOWN);
-        Debt second = new Debt(new BigDecimal("10.00"), DebtType.UNKNOWN);
+        Debt first = ModelUtil.createDebt(new BigDecimal("10.01"), DebtType.METHOD_LENGTH);
+        Debt second = ModelUtil.createDebt(new BigDecimal("10.00"), DebtType.METHOD_LENGTH);
 
         Assert.assertFalse(first.equals(second));
 
-        first = new Debt(new BigDecimal("10.00"), DebtType.UNKNOWN);
-        second = new Debt(new BigDecimal("10.00"), DebtType.BOOLEAN_EXPRESSION_COMPLEXITY);
+        first = ModelUtil.createDebt(new BigDecimal("10.00"), DebtType.METHOD_LENGTH);
+        second = ModelUtil.createDebt(new BigDecimal("10.00"), DebtType.BOOLEAN_EXPRESSION_COMPLEXITY);
 
         Assert.assertFalse(first.equals(second));
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void givenNullCostWhenCallConstructorThenNullPointerExceptionShouldBeThrown() {
-        new Debt(null, DebtType.CLASS_FAN_OUT_COMPLEXITY);
     }
 
     @Test(expected=NullPointerException.class)
     public void givenNullKeyWhenCallConstructorThenNullPointerExceptionShouldBeThrown() {
-        new Debt(BigDecimal.ZERO, null);
+        new Debt(null);
     }
 }

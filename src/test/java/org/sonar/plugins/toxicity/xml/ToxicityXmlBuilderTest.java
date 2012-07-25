@@ -20,10 +20,9 @@
 
 package org.sonar.plugins.toxicity.xml;
 
-import org.sonar.plugins.toxicity.model.DebtType;
-
 import org.junit.Test;
-import org.sonar.plugins.toxicity.model.Debt;
+import org.sonar.plugins.toxicity.model.DebtType;
+import org.sonar.plugins.toxicity.model.ModelUtil;
 import org.sonar.plugins.toxicity.model.Source;
 import org.sonar.plugins.toxicity.model.Toxicity;
 
@@ -52,11 +51,11 @@ public class ToxicityXmlBuilderTest {
         Toxicity expected = new Toxicity();
 
         Source smallTotal = new Source(SOURCE_1);
-        smallTotal.addDebt(new Debt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
+        smallTotal.addDebt(ModelUtil.createDebt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
 
         Source largeTotal = new Source(SOURCE_2);
-        largeTotal.addDebt(new Debt(METHOD_LENGTH_COST, DebtType.METHOD_LENGTH));
-        largeTotal.addDebt(new Debt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
+        largeTotal.addDebt(ModelUtil.createDebt(METHOD_LENGTH_COST, DebtType.METHOD_LENGTH));
+        largeTotal.addDebt(ModelUtil.createDebt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
 
         Collection<Source> sources = new ArrayList<Source>();
         sources.add(smallTotal);

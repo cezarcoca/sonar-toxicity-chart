@@ -49,9 +49,20 @@ public final class ToxicityXmlParser {
         throw new AssertionError();
     }
 
+    /**
+     * Parse the XML input and create a new {@link Toxicity} object. If input
+     * XML is invalid, an empty {@link Toxicity} is returned.
+     *
+     * @param xml
+     * @return
+     */
     public static Toxicity convertXmlToToxicity(byte[] xml) {
 
         Toxicity toxicity = new Toxicity();
+
+        if(xml == null) {
+            return toxicity;
+        }
 
         try {
 

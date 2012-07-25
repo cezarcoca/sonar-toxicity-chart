@@ -54,7 +54,7 @@ public class Source implements ToxicityNode, Comparable<Source> {
     private List<Debt> debts;
     private String name;
 
-    public Source() {
+    Source() {
         this("Unknown");
     }
 

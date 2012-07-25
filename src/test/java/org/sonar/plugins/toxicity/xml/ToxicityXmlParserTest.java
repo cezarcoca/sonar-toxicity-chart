@@ -20,22 +20,17 @@
 
 package org.sonar.plugins.toxicity.xml;
 
-import static junit.framework.Assert.*;
-
-import org.sonar.plugins.toxicity.model.DebtType;
-
-import org.sonar.plugins.toxicity.xml.ToxicityXmlParser;
-
-import org.sonar.plugins.toxicity.model.Source;
-
-import org.sonar.plugins.toxicity.model.Toxicity;
-
-import org.junit.Test;
-
 import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+import org.sonar.plugins.toxicity.model.DebtType;
+import org.sonar.plugins.toxicity.model.Source;
+import org.sonar.plugins.toxicity.model.Toxicity;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * @author ccoca
@@ -75,4 +70,14 @@ public class ToxicityXmlParserTest {
         assertTrue(seconde.getDebts().get(0).getCost().compareTo(new BigDecimal("1.3")) == 0);
     }
 
+
+    @Test
+    public void givenInvalidInputWhenParseThenEmptyToxicityStructureIsCreated() {
+
+        Toxicity toxicity = ToxicityXmlParser.convertXmlToToxicity(null);
+        assertEquals(0, toxicity.getSources().size());
+
+        toxicity = ToxicityXmlParser.convertXmlToToxicity(new byte[]{});
+        assertEquals(0, toxicity.getSources().size());
+    }
 }

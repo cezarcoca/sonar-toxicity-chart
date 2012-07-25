@@ -48,17 +48,15 @@ public class Debt implements ToxicityNode, Comparable<Debt> {
     private BigDecimal cost;
     private DebtType debtType;
 
-    public Debt() {
-        this(BigDecimal.ZERO, DebtType.UNKNOWN);
+    Debt() {
+        this.cost = BigDecimal.ZERO;
     }
 
-    public Debt(BigDecimal cost, DebtType debtType) {
-        super();
+    public Debt(DebtType debtType) {
 
-        Preconditions.checkNotNull(cost);
+        this();
+
         Preconditions.checkNotNull(debtType);
-
-        this.cost = normalize(cost);
         this.debtType = debtType;
     }
 

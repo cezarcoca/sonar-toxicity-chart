@@ -50,12 +50,7 @@ public class ToxicityTest {
     @Test
     public void whenGetTotalDebtCostIsInvokedThenCorrectCostShouldBeReturned() {
 
-        Toxicity toxicity = new Toxicity();
-
-        Collection<Source> sources = new ArrayList<Source>();
-        sources.add(createSource("toxicity"));
-        sources.add(createSource("chart"));
-        toxicity.setSources(sources);
+        Toxicity toxicity = createToxicity();
 
         Assert.assertTrue(toxicity.getTotalCostByDebt(DebtType.ANON_INNER_LENGTH).compareTo(ANON_INNER_LENGTH_COST.multiply(TWO)) == 0);
         Assert.assertTrue(toxicity.getTotalCostByDebt(DebtType.BOOLEAN_EXPRESSION_COMPLEXITY).compareTo(BOOLEAN_EXPRESSION_COMPLEXITY_COST.multiply(TWO)) == 0);
@@ -71,20 +66,68 @@ public class ToxicityTest {
 
     }
 
+    @Test
+    public void whenInvokeGetAverageCostThenCorrectValueShouldBeReturned() {
+
+        Toxicity toxicity = createToxicity();
+
+        BigDecimal total = ANON_INNER_LENGTH_COST
+                .add(BOOLEAN_EXPRESSION_COMPLEXITY_COST)
+                .add(CLASS_DATA_ABSTRACTION_COUPLING_COST)
+                .add(CLASS_FAN_OUT_COMPLEXITY_COST)
+                .add(CYCLOMATIC_COMPLEXITY_COST).add(FILE_LENGTH_COST)
+                .add(METHOD_LENGTH_COST).add(MISSING_SWITCH_DEFAULT_COST)
+                .add(NESTED_IF_DEPTH_COST).add(NESTED_TRY_DEPTH_COST);
+
+        Assert.assertEquals(0, toxicity.getAverageCost().compareTo(total.doubleValue()));
+    }
+
+    @Test
+    public void whenInvokeGetSourcesThenSourcesAreCorrectFiltered() {
+
+        Toxicity toxicity = new Toxicity();
+
+        Collection<Source> sources = new ArrayList<Source>();
+
+        Source first = new Source("first");
+        first.addDebt(ModelUtil.createDebt(FILE_LENGTH_COST, DebtType.FILE_LENGTH));
+        sources.add(first);
+
+        Source second = new Source("second");
+        second.addDebt(ModelUtil.createDebt(METHOD_LENGTH_COST, DebtType.METHOD_LENGTH));
+        sources.add(second);
+
+        toxicity.setSources(sources);
+
+        Assert.assertEquals(0, toxicity.getSources(METHOD_LENGTH_COST.add(BigDecimal.ONE)).size());
+        Assert.assertEquals(1, toxicity.getSources(METHOD_LENGTH_COST).size());
+        Assert.assertEquals(2, toxicity.getSources(FILE_LENGTH_COST).size());
+    }
+
+    private Toxicity createToxicity() {
+        Toxicity toxicity = new Toxicity();
+
+        Collection<Source> sources = new ArrayList<Source>();
+        sources.add(createSource("toxicity"));
+        sources.add(createSource("chart"));
+        toxicity.setSources(sources);
+        return toxicity;
+    }
+
     private Source createSource(String name) {
 
         Source source = new Source(name);
 
-        source.addDebt(new Debt(ANON_INNER_LENGTH_COST, DebtType.ANON_INNER_LENGTH));
-        source.addDebt(new Debt(BOOLEAN_EXPRESSION_COMPLEXITY_COST, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
-        source.addDebt(new Debt(CLASS_DATA_ABSTRACTION_COUPLING_COST, DebtType.CLASS_DATA_ABSTRACTION_COUPLING));
-        source.addDebt(new Debt(CLASS_FAN_OUT_COMPLEXITY_COST, DebtType.CLASS_FAN_OUT_COMPLEXITY));
-        source.addDebt(new Debt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
-        source.addDebt(new Debt(FILE_LENGTH_COST, DebtType.FILE_LENGTH));
-        source.addDebt(new Debt(METHOD_LENGTH_COST, DebtType.METHOD_LENGTH));
-        source.addDebt(new Debt(MISSING_SWITCH_DEFAULT_COST, DebtType.MISSING_SWITCH_DEFAULT));
-        source.addDebt(new Debt(NESTED_IF_DEPTH_COST, DebtType.NESTED_IF_DEPTH));
-        source.addDebt(new Debt(NESTED_TRY_DEPTH_COST, DebtType.NESTED_TRY_DEPTH));
+        source.addDebt(ModelUtil.createDebt(ANON_INNER_LENGTH_COST, DebtType.ANON_INNER_LENGTH));
+        source.addDebt(ModelUtil.createDebt(BOOLEAN_EXPRESSION_COMPLEXITY_COST, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
+        source.addDebt(ModelUtil.createDebt(CLASS_DATA_ABSTRACTION_COUPLING_COST, DebtType.CLASS_DATA_ABSTRACTION_COUPLING));
+        source.addDebt(ModelUtil.createDebt(CLASS_FAN_OUT_COMPLEXITY_COST, DebtType.CLASS_FAN_OUT_COMPLEXITY));
+        source.addDebt(ModelUtil.createDebt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
+        source.addDebt(ModelUtil.createDebt(FILE_LENGTH_COST, DebtType.FILE_LENGTH));
+        source.addDebt(ModelUtil.createDebt(METHOD_LENGTH_COST, DebtType.METHOD_LENGTH));
+        source.addDebt(ModelUtil.createDebt(MISSING_SWITCH_DEFAULT_COST, DebtType.MISSING_SWITCH_DEFAULT));
+        source.addDebt(ModelUtil.createDebt(NESTED_IF_DEPTH_COST, DebtType.NESTED_IF_DEPTH));
+        source.addDebt(ModelUtil.createDebt(NESTED_TRY_DEPTH_COST, DebtType.NESTED_TRY_DEPTH));
 
         return source;
     }

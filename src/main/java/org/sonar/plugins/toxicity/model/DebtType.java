@@ -164,19 +164,6 @@ public enum DebtType {
         public String getColorHexCode() {
             return "#A99BBD";
         }
-    },
-
-    UNKNOWN() {
-
-        @Override
-        public String getKey() {
-            return "Unknown";
-        }
-
-        @Override
-        public String getColorHexCode() {
-            return "#FF0000";
-        }
     };
 
     public abstract String getKey();

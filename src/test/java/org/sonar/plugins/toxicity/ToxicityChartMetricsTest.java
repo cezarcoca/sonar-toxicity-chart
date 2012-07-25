@@ -38,10 +38,10 @@ public class ToxicityChartMetricsTest {
         assertEquals(13, new ToxicityChartMetrics().getMetrics().size());
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void whenGetMetricByDebtTypeIsInvokedWithUnknownDebtThenIllegalArgumentExceptionShouldBeThrown() {
+    @Test(expected=NullPointerException.class)
+    public void whenGetMetricByDebtTypeIsInvokedWithNullDebtThenNullPointerExceptionShouldBeThrown() {
 
-        ToxicityChartMetrics.getMetricByDebtType(DebtType.UNKNOWN);
+        ToxicityChartMetrics.getMetricByDebtType(null);
     }
 
     @Test

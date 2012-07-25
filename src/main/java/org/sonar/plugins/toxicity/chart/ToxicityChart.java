@@ -21,7 +21,6 @@
 package org.sonar.plugins.toxicity.chart;
 
 import com.google.common.annotations.VisibleForTesting;
-
 import org.apache.commons.configuration.Configuration;
 import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
@@ -41,15 +40,13 @@ import org.sonar.api.charts.AbstractChart;
 import org.sonar.api.charts.ChartParameters;
 import org.sonar.api.database.DatabaseSession;
 import org.sonar.api.database.model.MeasureData;
-import org.sonar.api.database.model.MeasureModel;
 import org.sonar.plugins.toxicity.ToxicityChartPlugin;
+import org.sonar.plugins.toxicity.dao.MeasureDao;
 import org.sonar.plugins.toxicity.model.Debt;
 import org.sonar.plugins.toxicity.model.DebtType;
 import org.sonar.plugins.toxicity.model.Source;
 import org.sonar.plugins.toxicity.model.Toxicity;
 import org.sonar.plugins.toxicity.xml.ToxicityXmlParser;
-
-import javax.persistence.Query;
 
 import java.awt.Color;
 import java.math.BigDecimal;
@@ -63,18 +60,19 @@ public class ToxicityChart extends AbstractChart {
             .getLogger(ToxicityChart.class);
 
     private static final String KEY = "toxicitychart";
-    private static final String MEASURE_ID = "v";
     private static final int DEFAULT_WIDTH = 1024;
     private static final int DEFAULT_HEIGHT = 576;
     private static final Float X_AXIS_FONT_SIZE = Float.valueOf("7");
 
-    private DatabaseSession session;
+    protected static final String MEASURE_ID = "v";
+
     private Configuration configuration;
+    private MeasureDao dao;
 
     public ToxicityChart(DatabaseSession session, Configuration configuration) {
         super();
-        this.session = session;
         this.configuration = configuration;
+        this.dao = new MeasureDao(session);
     }
 
     public String getKey() {
@@ -85,7 +83,8 @@ public class ToxicityChart extends AbstractChart {
     @Override
     protected Plot getPlot(ChartParameters params) {
 
-        Toxicity toxicity = getToxicity(getMeasureData(params.getValue(MEASURE_ID)));
+        MeasureData data = dao.getMeasureDataById(params.getValue(MEASURE_ID));
+        Toxicity toxicity = ToxicityXmlParser.convertXmlToToxicity(data != null ? data.getData() : null);
 
         Set<String> seriesOrderedByFirstUse = new LinkedHashSet<String>();
         CategoryDataset dataset = createDataset(toxicity,
@@ -118,15 +117,6 @@ public class ToxicityChart extends AbstractChart {
         return plot;
     }
 
-    private Toxicity getToxicity(MeasureData data) {
-
-        if(data != null) {
-            return ToxicityXmlParser.convertXmlToToxicity(data.getData());
-        }
-
-        return new Toxicity();
-    }
-
     private CategoryDataset createDataset(Toxicity toxicity, Set<String> series) {
 
         DefaultCategoryDataset result = new DefaultCategoryDataset();
@@ -150,24 +140,6 @@ public class ToxicityChart extends AbstractChart {
         return chart;
     }
 
-    private MeasureData getMeasureData(String id) {
-
-        MeasureData data;
-        try {
-            session.start();
-            Query query = session
-                    .createQuery("select m from MeasureModel m where m.id = ?");
-            query.setParameter(1, Long.valueOf(id));
-
-            MeasureModel measure = (MeasureModel) query.getSingleResult();
-            data = measure.getMeasureData();
-        } finally {
-            session.stop();
-        }
-
-        return data;
-    }
-
     @VisibleForTesting
     BigDecimal getThreshold() {
 
@@ -185,4 +157,11 @@ public class ToxicityChart extends AbstractChart {
 
         return value;
     }
+
+    @VisibleForTesting
+    void setDao(MeasureDao dao) {
+        this.dao = dao;
+    }
+
+
 }

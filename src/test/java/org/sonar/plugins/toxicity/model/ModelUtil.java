@@ -18,36 +18,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
 
-package org.sonar.plugins.toxicity;
+package org.sonar.plugins.toxicity.model;
 
-import org.sonar.plugins.toxicity.model.DebtType;
-
-import org.junit.Test;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.measures.Measure;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import java.math.BigDecimal;
 
 /**
  * @author ccoca
  *
  */
-public class ToxicityChartAggregatorTest {
+public final class ModelUtil {
 
-    @Test
-    public void whenExecuteOnIsInvokedThenAllMetricsAreSaved() {
-
-        SensorContext context = mock(SensorContext.class);
-
-        ToxicityChartAggregator aggregator = new ToxicityChartAggregator();
-        aggregator.execute(null);
-        aggregator.executeOn(null, context);
-
-        int measures = DebtType.values().length + 2;
-
-        verify(context, times(measures)).saveMeasure(any(Measure.class));
+    private ModelUtil() {
+        throw new AssertionError();
     }
+
+    public static Debt createDebt(BigDecimal cost, DebtType debtType) {
+
+        Debt debt = new Debt(debtType);
+        debt.addCost(cost);
+
+        return debt;
+    }
+
 }

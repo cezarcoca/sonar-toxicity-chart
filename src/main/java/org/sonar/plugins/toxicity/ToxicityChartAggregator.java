@@ -26,14 +26,10 @@ import org.sonar.api.batch.Initializer;
 import org.sonar.api.batch.PostJob;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.Measure;
-import org.sonar.api.measures.Metric;
-import org.sonar.api.measures.PersistenceMode;
 import org.sonar.api.resources.Project;
 import org.sonar.plugins.toxicity.model.DebtType;
 import org.sonar.plugins.toxicity.model.Toxicity;
 import org.sonar.plugins.toxicity.xml.ToxicityXmlBuilder;
-
-import java.math.BigDecimal;
 
 public class ToxicityChartAggregator extends Initializer implements PostJob {
 
@@ -56,44 +52,20 @@ public class ToxicityChartAggregator extends Initializer implements PostJob {
 
         Toxicity toxicity = debtsFilter.getToxicity();
 
-        context.saveMeasure(createXmlMeasure(new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity))));
-        context.saveMeasure(createAverageMeasure(toxicity.getAverageCost()));
+        context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_STATUS, new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity))));
+        context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE, toxicity.getAverageCost()));
 
         for (DebtType debt : DebtType.values()) {
-            if(debt != DebtType.UNKNOWN) {
-                context.saveMeasure(createToxicityMeasure(ToxicityChartMetrics.getMetricByDebtType(debt), toxicity.getTotalCostByDebt(debt)));
-            }
+            context.saveMeasure(new Measure(
+                    ToxicityChartMetrics.getMetricByDebtType(debt),
+                    toxicity.getTotalCostByDebt(debt).doubleValue()));
+
         }
 
         LOGGER.info("Post-job phase finished successfully.");
     }
 
-    private Measure createXmlMeasure(String data) {
-
-        Measure measure = new Measure(ToxicityChartMetrics.TOXICITY_STATUS, data);
-        measure.setPersistenceMode(PersistenceMode.FULL);
-
-        return measure;
-    }
-
-    private Measure createAverageMeasure(Double average) {
-
-        Measure measure = new Measure(ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE, average);
-        measure.setPersistenceMode(PersistenceMode.FULL);
-
-        return measure;
-    }
-
-    private Measure createToxicityMeasure(Metric metric, BigDecimal value) {
-
-        Measure measure = new Measure(metric, value.doubleValue());
-        measure.setPersistenceMode(PersistenceMode.FULL);
-
-        return measure;
-    }
-
     public DebtsFilter getDebtsFilter() {
         return debtsFilter;
     }
-
 }

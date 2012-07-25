@@ -21,14 +21,12 @@
 package org.sonar.plugins.toxicity;
 
 
-import org.sonar.plugins.toxicity.debts.ViolationsMapper;
-
-import org.sonar.plugins.toxicity.model.DebtType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.rules.Violation;
+import org.sonar.plugins.toxicity.debts.ViolationsMapper;
 import org.sonar.plugins.toxicity.model.Debt;
+import org.sonar.plugins.toxicity.model.DebtType;
 import org.sonar.plugins.toxicity.model.Source;
 import org.sonar.plugins.toxicity.model.Toxicity;
 
@@ -48,11 +46,16 @@ class DebtsFilter {
     }
 
     void filter(Violation violation) {
-        DebtType debt = ViolationsMapper.getDebtType(violation);
-        if (debt != null) {
+        DebtType debtType = ViolationsMapper.getDebtType(violation);
+        if (debtType != null) {
+
             Source source = getSource(violation);
-            updateDebtCostForSource(violation, source, debt);
-            LOGGER.debug("Match found. Debt type is: {} - for: {}.", debt.getKey(), source.getName());
+            Debt debt = getDebtByType(source, debtType);
+            BigDecimal cost = ViolationsMapper.getDebtCostProcessor(violation).getCost(violation);
+
+            debt.addCost(cost);
+
+            LOGGER.debug("Match found. Debt type is: {} - for: {}.", debtType.getKey(), source.getName());
         }
     }
 
@@ -68,11 +71,6 @@ class DebtsFilter {
         return source;
     }
 
-    private void updateDebtCostForSource(Violation violation, Source source, DebtType type) {
-
-        getDebtByType(source, type).addCost(ViolationsMapper.getDebtCostProcessor(violation).getCost(violation));
-    }
-
     private Debt getDebtByType(Source source, DebtType type) {
 
         Debt result = null;
@@ -84,7 +82,7 @@ class DebtsFilter {
         }
 
         if(result == null) {
-            result = new Debt(BigDecimal.ZERO, type);
+            result = new Debt(type);
             source.addDebt(result);
         }
 
