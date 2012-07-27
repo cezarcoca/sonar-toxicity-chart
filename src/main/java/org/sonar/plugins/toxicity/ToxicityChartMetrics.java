@@ -21,7 +21,6 @@
 package org.sonar.plugins.toxicity;
 
 import com.google.common.base.Preconditions;
-
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Metric;
 import org.sonar.plugins.toxicity.model.DebtType;
@@ -41,106 +40,119 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
     /**
      * The Toxicity Chart metric
      */
-    public static final Metric TOXICITY_STATUS = new Metric(
-            "toxicity_chart_status", "Toxicity Chart Status",
-            "XML representation of project's toxicity.", Metric.ValueType.DATA,
-            1, true, CoreMetrics.DOMAIN_GENERAL);
+    public static final Metric TOXICITY_STATUS = new Metric.Builder(
+            "toxicity_chart_status", "Toxicity Chart Status", Metric.ValueType.DATA)
+            .setDescription("XML representation of project's toxicity.")
+            .setDirection(Metric.DIRECTION_NONE).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart average value
      */
-    public static final Metric TOXICITY_AVERAGE_VALUE = new Metric(
-            "toxicity_chart_average", "Toxicity Chart average value",
-            "Toxicity Chart average value.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_AVERAGE_VALUE = new Metric.Builder(
+            "toxicity_chart_average", "Toxicity Chart average value", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart average value.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart boolean expression complexity
      */
-    public static final Metric TOXICITY_BOOLEAN_EXPRESSION_COMPLEXITY_VALUE = new Metric(
-            "toxicity_chart_boolean_expression_complexity", "Toxicity Chart boolean expression complexity",
-            "Toxicity Chart boolean expression complexity.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_BOOLEAN_EXPRESSION_COMPLEXITY_VALUE = new Metric.Builder(
+            "toxicity_chart_boolean_expression_complexity", "Toxicity Chart boolean expression complexity", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart boolean expression complexity.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart class data abstraction coupling
      */
-    public static final Metric TOXICITY_CLASS_DATA_ABSTRACTION_COUPLING_VALUE = new Metric(
-            "toxicity_chart_class_data_abstraction_coupling", "Toxicity Chart class data abstraction coupling",
-            "Toxicity Chart class data abstraction coupling.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_CLASS_DATA_ABSTRACTION_COUPLING_VALUE = new Metric.Builder(
+            "toxicity_chart_class_data_abstraction_coupling", "Toxicity Chart class data abstraction coupling", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart class data abstraction coupling.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart class fan out complexity
      */
-    public static final Metric TOXICITY_CLASS_FAN_OUT_COMPLEXITY_VALUE = new Metric(
-            "toxicity_chart_class_fan_out_complexity", "Toxicity Chart class fan out complexity",
-            "Toxicity Chart class fan out complexity.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_CLASS_FAN_OUT_COMPLEXITY_VALUE = new Metric.Builder(
+            "toxicity_chart_class_fan_out_complexity", "Toxicity Chart class fan out complexity", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart class fan out complexity.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart cyclomatic complexity
      */
-    public static final Metric TOXICITY_CYCLOMATIC_COMPLEXITY_VALUE = new Metric(
-            "toxicity_chart_cyclomatic_complexity", "Toxicity Chart cyclomatic complexity",
-            "Toxicity Chart cyclomatic complexity.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_CYCLOMATIC_COMPLEXITY_VALUE = new Metric.Builder(
+            "toxicity_chart_cyclomatic_complexity", "Toxicity Chart cyclomatic complexity", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart cyclomatic complexity.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart file length
      */
-    public static final Metric TOXICITY_FILE_LENGTH_VALUE = new Metric(
-            "toxicity_chart_file_length", "Toxicity Chart file length",
-            "Toxicity Chart file length.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_FILE_LENGTH_VALUE = new Metric.Builder(
+            "toxicity_chart_file_length", "Toxicity Chart file length", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart file length.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart method length
      */
-    public static final Metric TOXICITY_METHOD_LENGTH_VALUE = new Metric(
-            "toxicity_chart_method_length", "Toxicity Chart method length",
-            "Toxicity Chart method length.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_METHOD_LENGTH_VALUE = new Metric.Builder(
+            "toxicity_chart_method_length", "Toxicity Chart method length", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart method length.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart nested if depth
      */
-    public static final Metric TOXICITY_NESTED_IF_DEPTH_VALUE = new Metric(
-            "toxicity_chart_nested_if_depth", "Toxicity Chart nested if depth",
-            "Toxicity Chart nested if depth.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_NESTED_IF_DEPTH_VALUE = new Metric.Builder(
+            "toxicity_chart_nested_if_depth", "Toxicity Chart nested if depth", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart nested if depth.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart nested try depth
      */
-    public static final Metric TOXICITY_NESTED_TRY_DEPTH_VALUE = new Metric(
-            "toxicity_chart_nested_try_depth", "Toxicity Chart nested try depth",
-            "Toxicity Chart nested try depth.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_NESTED_TRY_DEPTH_VALUE = new Metric.Builder(
+            "toxicity_chart_nested_try_depth", "Toxicity Chart nested try depth", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart nested try depth.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart anon inner length
      */
-    public static final Metric TOXICITY_ANON_INNER_LENGTH_VALUE = new Metric(
-            "toxicity_chart_anon_inner_length", "Toxicity Chart anon inner length",
-            "Toxicity Chart anon inner length.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_ANON_INNER_LENGTH_VALUE = new Metric.Builder(
+            "toxicity_chart_anon_inner_length", "Toxicity Chart anon inner length", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart anon inner length.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart parameter number
      */
-    public static final Metric TOXICITY_PARAMETER_NUMBER_VALUE = new Metric(
-            "toxicity_chart_parameter_number", "Toxicity Chart parameter number",
-            "Toxicity Chart parameter number.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_PARAMETER_NUMBER_VALUE = new Metric.Builder(
+            "toxicity_chart_parameter_number", "Toxicity Chart parameter number", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart parameter number.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * The Toxicity Chart missing switch default
      */
-    public static final Metric TOXICITY_MISSING_SWITCH_DEFAULT_VALUE = new Metric(
-            "toxicity_chart_missing_switch_default", "Toxicity Chart missing switch default",
-            "Toxicity Chart missing switch default.", Metric.ValueType.FLOAT, -1, true,
-            CoreMetrics.DOMAIN_RULES);
+    public static final Metric TOXICITY_MISSING_SWITCH_DEFAULT_VALUE = new Metric.Builder(
+            "toxicity_chart_missing_switch_default", "Toxicity Chart missing switch default", Metric.ValueType.FLOAT)
+            .setDescription("Toxicity Chart missing switch default.")
+            .setDirection(Metric.DIRECTION_WORST).setQualitative(Boolean.TRUE)
+            .setDeleteHistoricalData(Boolean.FALSE).setDomain(CoreMetrics.DOMAIN_GENERAL).create();
 
     /**
      * @return the declare metrics

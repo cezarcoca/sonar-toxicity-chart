@@ -20,10 +20,11 @@
 
 package org.sonar.plugins.toxicity;
 
+import org.sonar.api.SonarPlugin;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.Extension;
-import org.sonar.api.Plugin;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.plugins.toxicity.chart.ToxicityChart;
@@ -34,7 +35,7 @@ import java.util.List;
 @Properties ({
     @Property(key = ToxicityChartPlugin.TC_THRESHOLD, defaultValue = ToxicityChartPlugin.TC_THRESHOLD_DEFAULT, name = "Toxicity Chart threshold", description = "Toxicity Chart threshold.")
 })
-public class ToxicityChartPlugin implements Plugin {
+public class ToxicityChartPlugin extends SonarPlugin {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(ToxicityChartPlugin.class);
 
@@ -50,20 +51,6 @@ public class ToxicityChartPlugin implements Plugin {
     }
 
     /**
-     * @return the plugin name
-     */
-    public String getName() {
-        return PLUGIN_NAME;
-    }
-
-    /**
-     * @return the plugin description
-     */
-    public String getDescription() {
-        return PLUGIN_NAME;
-    }
-
-    /**
      * @return the list of extensions of the plugin
      */
     public List<Class<? extends Extension>> getExtensions() {
@@ -74,12 +61,5 @@ public class ToxicityChartPlugin implements Plugin {
         extensions.add(ToxicityChartMetrics.class);
         extensions.add(ToxicityChart.class);
         return extensions;
-    }
-
-    /**
-     * @return the plugin key
-     */
-    public String getKey() {
-        return PLUGIN_KEY;
     }
 }

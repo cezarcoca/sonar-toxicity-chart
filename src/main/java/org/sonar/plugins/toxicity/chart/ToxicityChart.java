@@ -64,7 +64,8 @@ public class ToxicityChart extends AbstractChart {
     private static final int DEFAULT_HEIGHT = 576;
     private static final Float X_AXIS_FONT_SIZE = Float.valueOf("7");
 
-    protected static final String MEASURE_ID = "v";
+    @VisibleForTesting
+    static final String MEASURE_ID = "v";
 
     private Configuration configuration;
     private MeasureDao dao;
