@@ -20,9 +20,12 @@
 
 package org.sonar.plugins.toxicity;
 
+import org.sonar.api.web.NavigationSection;
+
 import org.sonar.api.web.AbstractRubyTemplate;
 import org.sonar.api.web.RubyRailsPage;
 
+@NavigationSection({ NavigationSection.RESOURCE})
 public class ToxicityChartPage extends AbstractRubyTemplate implements
         RubyRailsPage {
 
