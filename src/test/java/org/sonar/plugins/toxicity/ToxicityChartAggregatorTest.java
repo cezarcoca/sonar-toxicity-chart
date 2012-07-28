@@ -20,6 +20,8 @@
 
 package org.sonar.plugins.toxicity;
 
+import org.sonar.api.resources.Project;
+
 import org.sonar.plugins.toxicity.model.DebtType;
 
 import org.junit.Test;
@@ -41,10 +43,10 @@ public class ToxicityChartAggregatorTest {
     public void whenExecuteOnIsInvokedThenAllMetricsAreSaved() {
 
         SensorContext context = mock(SensorContext.class);
+        Project project = new Project("JAVA project.");
 
         ToxicityChartAggregator aggregator = new ToxicityChartAggregator();
-        aggregator.execute(null);
-        aggregator.executeOn(null, context);
+        aggregator.executeOn(project, context);
 
         int measures = DebtType.values().length + 2;
 

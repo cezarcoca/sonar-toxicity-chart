@@ -22,7 +22,6 @@ package org.sonar.plugins.toxicity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.batch.Initializer;
 import org.sonar.api.batch.PostJob;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.Measure;
@@ -31,20 +30,15 @@ import org.sonar.plugins.toxicity.model.DebtType;
 import org.sonar.plugins.toxicity.model.Toxicity;
 import org.sonar.plugins.toxicity.xml.ToxicityXmlBuilder;
 
-public class ToxicityChartAggregator extends Initializer implements PostJob {
+public class ToxicityChartAggregator implements PostJob {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(ToxicityChartAggregator.class);
 
-    private DebtsFilter debtsFilter;
-
-    /* (non-Javadoc)
-     * @see org.sonar.api.batch.Initializer#execute(org.sonar.api.resources.Project)
+    /**
+     * Set as static to provide multi-module support. For each module a new
+     * ToxicityChartAggregator will be created.
      */
-    @Override
-    public void execute(Project project) {
-
-        debtsFilter = new DebtsFilter();
-    }
+    private static DebtsFilter debtsFilter = new DebtsFilter();
 
     public void executeOn(Project project, SensorContext context) {
 
@@ -65,7 +59,7 @@ public class ToxicityChartAggregator extends Initializer implements PostJob {
         LOGGER.info("Post-job phase finished successfully.");
     }
 
-    public DebtsFilter getDebtsFilter() {
+    DebtsFilter getDebtsFilter() {
         return debtsFilter;
     }
 }
