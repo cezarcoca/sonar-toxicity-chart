@@ -20,8 +20,6 @@
 
 package org.sonar.plugins.toxicity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Decorator;
 import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.resources.Project;
@@ -29,16 +27,6 @@ import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Violation;
 
 public class ToxicityChartDecorator implements Decorator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ToxicityChartDecorator.class);
-
-    private ToxicityChartAggregator aggregator;
-
-    public ToxicityChartDecorator(ToxicityChartAggregator aggregator) {
-        super();
-        this.aggregator = aggregator;
-        LOGGER.info("Toxicity Chart decorator - successfully created.");
-    }
 
     public boolean shouldExecuteOnProject(Project project) {
         return true;
@@ -48,7 +36,7 @@ public class ToxicityChartDecorator implements Decorator {
             DecoratorContext context) {
 
         for (Violation violation : context.getViolations()) {
-            aggregator.getDebtsFilter().filter(violation);
+            DebtsFilter.getInstance().filter(violation);
         }
     }
 }

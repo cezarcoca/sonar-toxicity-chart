@@ -34,15 +34,31 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-class DebtsFilter {
+/**
+ * This class is responsible to filter violations and to store the founds debts.
+ * The Singleton pattern was used in order to support multi-module projects.
+ *
+ * @author ccoca
+ *
+ */
+final class DebtsFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DebtsFilter.class);
 
-    private Map<String, Source> sources;
+    /**
+     * Eager initialization.
+     */
+    private static final DebtsFilter INSTANCE = new DebtsFilter();
 
-    DebtsFilter() {
+    private final Map<String, Source> sources;
+
+    private DebtsFilter() {
         super();
         sources = new HashMap<String, Source>();
+    }
+
+    static DebtsFilter getInstance() {
+        return INSTANCE;
     }
 
     void filter(Violation violation) {

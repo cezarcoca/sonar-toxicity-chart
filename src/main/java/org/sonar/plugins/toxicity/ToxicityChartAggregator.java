@@ -34,17 +34,11 @@ public class ToxicityChartAggregator implements PostJob {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(ToxicityChartAggregator.class);
 
-    /**
-     * Set as static to provide multi-module support. For each module a new
-     * ToxicityChartAggregator will be created.
-     */
-    private static DebtsFilter debtsFilter = new DebtsFilter();
-
     public void executeOn(Project project, SensorContext context) {
 
         LOGGER.info("Starting post-job phase for: {} project.", context.toString());
 
-        Toxicity toxicity = debtsFilter.getToxicity();
+        Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
 
         context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_STATUS, new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity))));
         context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE, toxicity.getAverageCost()));
@@ -57,9 +51,5 @@ public class ToxicityChartAggregator implements PostJob {
         }
 
         LOGGER.info("Post-job phase finished successfully.");
-    }
-
-    DebtsFilter getDebtsFilter() {
-        return debtsFilter;
     }
 }

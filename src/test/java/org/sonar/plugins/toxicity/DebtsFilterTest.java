@@ -20,6 +20,10 @@
 
 package org.sonar.plugins.toxicity;
 
+import org.junit.After;
+
+import org.junit.Before;
+
 import org.junit.Test;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Rule;
@@ -39,12 +43,22 @@ import static org.mockito.Mockito.when;
  * @author ccoca
  *
  */
-public class DebtsFilterTest {
+public final class DebtsFilterTest {
 
     private static final String SECOND = "second";
     private static final String FIRST = "first";
     private static final String THIRD = "third";
     private static final String MESSAGE_FILE_LENGTH = "Method length is 270 lines (max allowed is 30).";
+
+    @Before
+    public void setUp() {
+        DebtsFilter.getInstance().cleanup();
+    }
+
+    @After
+    public void tearDown() {
+        DebtsFilter.getInstance().cleanup();
+    }
 
     @Test
     public void whenInvokeFilterThenToxicityShouldBeUpdated() {
@@ -54,7 +68,7 @@ public class DebtsFilterTest {
         Violation v3 = createViolation("", ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE, SECOND);
         Violation v4 = createViolation("", "", THIRD);
 
-        DebtsFilter debtsFilter = new DebtsFilter();
+        DebtsFilter debtsFilter = DebtsFilter.getInstance();
 
         debtsFilter.filter(v1);
         debtsFilter.filter(v2);

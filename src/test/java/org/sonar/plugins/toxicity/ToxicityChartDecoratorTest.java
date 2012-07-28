@@ -25,6 +25,7 @@ import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.Violation;
+import org.sonar.plugins.toxicity.debts.ViolationsMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,25 +44,22 @@ public class ToxicityChartDecoratorTest {
     @Test
     public void whenDecorateIsInvokedThenAllViolationsShouldBeProcessed() {
 
-        ToxicityChartAggregator aggregator = mock(ToxicityChartAggregator.class);
-        DebtsFilter debtsFilter = mock(DebtsFilter.class);
+        int count = 10;
+
         DecoratorContext context = mock(DecoratorContext.class);
         Resource<?> resource = mock(Resource.class);
 
-        Violation violation = Violation.create(Rule.create(), resource);
         List<Violation> violations = new ArrayList<Violation>();
-
-        int no = 10;
-        for(int i =0; i < no; i++) {
-            violations.add(violation);
+        for (int i = 0; i < count; i++) {
+            violations.add(Violation.create(Rule.create().setKey(ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE), resource));
         }
 
         when(context.getViolations()).thenReturn(violations);
-        when(aggregator.getDebtsFilter()).thenReturn(debtsFilter);
+        when(resource.getLongName()).thenReturn("org.sonar.plugins.toxicity");
 
-        ToxicityChartDecorator decorator = new ToxicityChartDecorator(aggregator);
+        ToxicityChartDecorator decorator = new ToxicityChartDecorator();
         decorator.decorate(resource, context);
 
-        verify(debtsFilter, times(no)).filter(violation);
+        verify(resource, times(count)).getLongName();
     }
 }
