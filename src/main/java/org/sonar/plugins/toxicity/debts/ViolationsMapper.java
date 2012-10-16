@@ -42,110 +42,116 @@ import org.sonar.api.rules.Violation;
  */
 public final class ViolationsMapper {
 
-    /**
+  /**
      *
      */
-    public static final String CYCLOMATIC_COMPLEXITY_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.metrics.CyclomaticComplexityCheck";
-    /**
+  public static final String CYCLOMATIC_COMPLEXITY_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.metrics.CyclomaticComplexityCheck";
+  /**
      *
      */
-    public static final String CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.metrics.ClassFanOutComplexityCheck";
-    /**
+  public static final String CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.metrics.ClassFanOutComplexityCheck";
+  /**
      *
      */
-    public static final String CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.metrics.ClassDataAbstractionCouplingCheck";
-    /**
+  public static final String CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.metrics.ClassDataAbstractionCouplingCheck";
+  /**
      *
      */
-    public static final String BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.metrics.BooleanExpressionComplexityCheck";
-    /**
+  public static final String BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.metrics.BooleanExpressionComplexityCheck";
+  /**
      *
      */
-    public static final String NESTED_TRY_DEPTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.coding.NestedTryDepthCheck";
-    /**
+  public static final String NESTED_TRY_DEPTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.coding.NestedTryDepthCheck";
+  /**
      *
      */
-    public static final String NESTED_IF_DEPTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.coding.NestedIfDepthCheck";
-    /**
+  public static final String NESTED_IF_DEPTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.coding.NestedIfDepthCheck";
+  /**
      *
      */
-    public static final String MISSING_SWITCH_DEFAULT_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck";
-    /**
+  public static final String MISSING_SWITCH_DEFAULT_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck";
+  /**
      *
      */
-    public static final String PARAMETER_NUMBER_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.sizes.ParameterNumberCheck";
-    /**
+  public static final String PARAMETER_NUMBER_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.sizes.ParameterNumberCheck";
+  /**
      *
      */
-    public static final String METHOD_LENGTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.sizes.MethodLengthCheck";
-    /**
+  public static final String METHOD_LENGTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.sizes.MethodLengthCheck";
+  /**
      *
      */
-    public static final String FILE_LENGTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.sizes.FileLengthCheck";
-    /**
+  public static final String FILE_LENGTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.sizes.FileLengthCheck";
+  /**
      *
      */
-    public static final String ANON_INNER_LENGTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.sizes.AnonInnerLengthCheck";
+  public static final String ANON_INNER_LENGTH_CHECK_STYLE = "com.puppycrawl.tools.checkstyle.checks.sizes.AnonInnerLengthCheck";
 
-    private static final Map<String, DebtType> VIOLATION_DEBT;
-    private static final Map<String, DebtCostProcessor> VIOLATION_DEBT_COST_PROCESSOR;
+  private static final Map<String, DebtType> VIOLATION_DEBT;
+  private static final Map<String, DebtCostProcessor> VIOLATION_DEBT_COST_PROCESSOR;
 
-    static {
+  static {
 
-        Map<String, DebtType> map = new HashMap<String, DebtType>();
+    Map<String, DebtType> map = new HashMap<String, DebtType>();
 
-        map.put(ANON_INNER_LENGTH_CHECK_STYLE, DebtType.ANON_INNER_LENGTH);
-        map.put(FILE_LENGTH_CHECK_STYLE, DebtType.FILE_LENGTH);
-        map.put(METHOD_LENGTH_CHECK_STYLE, DebtType.METHOD_LENGTH);
-        map.put(PARAMETER_NUMBER_CHECK_STYLE, DebtType.PARAMETER_NUMBER);
-        map.put(MISSING_SWITCH_DEFAULT_CHECK_STYLE, DebtType.MISSING_SWITCH_DEFAULT);
-        map.put(NESTED_IF_DEPTH_CHECK_STYLE, DebtType.NESTED_IF_DEPTH);
-        map.put(NESTED_TRY_DEPTH_CHECK_STYLE, DebtType.NESTED_TRY_DEPTH);
-        map.put(BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY);
-        map.put(CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE, DebtType.CLASS_DATA_ABSTRACTION_COUPLING);
-        map.put(CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE, DebtType.CLASS_FAN_OUT_COMPLEXITY);
-        map.put(CYCLOMATIC_COMPLEXITY_CHECK_STYLE, DebtType.CYCLOMATIC_COMPLEXITY);
+    map.put(ANON_INNER_LENGTH_CHECK_STYLE, DebtType.ANON_INNER_LENGTH);
+    map.put(FILE_LENGTH_CHECK_STYLE, DebtType.FILE_LENGTH);
+    map.put(METHOD_LENGTH_CHECK_STYLE, DebtType.METHOD_LENGTH);
+    map.put(PARAMETER_NUMBER_CHECK_STYLE, DebtType.PARAMETER_NUMBER);
+    map.put(MISSING_SWITCH_DEFAULT_CHECK_STYLE, DebtType.MISSING_SWITCH_DEFAULT);
+    map.put(NESTED_IF_DEPTH_CHECK_STYLE, DebtType.NESTED_IF_DEPTH);
+    map.put(NESTED_TRY_DEPTH_CHECK_STYLE, DebtType.NESTED_TRY_DEPTH);
+    map.put(BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE,
+        DebtType.BOOLEAN_EXPRESSION_COMPLEXITY);
+    map.put(CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE,
+        DebtType.CLASS_DATA_ABSTRACTION_COUPLING);
+    map.put(CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE,
+        DebtType.CLASS_FAN_OUT_COMPLEXITY);
+    map.put(CYCLOMATIC_COMPLEXITY_CHECK_STYLE, DebtType.CYCLOMATIC_COMPLEXITY);
 
-        VIOLATION_DEBT = Collections.unmodifiableMap(map);
+    VIOLATION_DEBT = Collections.unmodifiableMap(map);
 
-        Map<String, DebtCostProcessor> processors = new HashMap<String, DebtCostProcessor>();
-        DebtCostProcessor checkStyleOneParameter = new CheckStyleOneParameterCostProcessor();
-        DebtCostProcessor checkStyleTwoParameters = new CheckStyleTwoParametersCostProcessor();
+    Map<String, DebtCostProcessor> processors = new HashMap<String, DebtCostProcessor>();
+    DebtCostProcessor checkStyleOneParameter = new CheckStyleOneParameterCostProcessor();
+    DebtCostProcessor checkStyleTwoParameters = new CheckStyleTwoParametersCostProcessor();
 
-        processors.put(ANON_INNER_LENGTH_CHECK_STYLE, checkStyleTwoParameters);
-        processors.put(FILE_LENGTH_CHECK_STYLE, checkStyleTwoParameters);
-        processors.put(METHOD_LENGTH_CHECK_STYLE, checkStyleTwoParameters);
-        processors.put(PARAMETER_NUMBER_CHECK_STYLE, checkStyleOneParameter);
-        processors.put(MISSING_SWITCH_DEFAULT_CHECK_STYLE, checkStyleOneParameter);
-        processors.put(NESTED_IF_DEPTH_CHECK_STYLE, checkStyleTwoParameters);
-        processors.put(NESTED_TRY_DEPTH_CHECK_STYLE, checkStyleTwoParameters);
-        processors.put(BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE, checkStyleTwoParameters);
-        processors.put(CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE, checkStyleTwoParameters);
-        processors.put(CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE, checkStyleTwoParameters);
-        processors.put(CYCLOMATIC_COMPLEXITY_CHECK_STYLE, checkStyleTwoParameters);
+    processors.put(ANON_INNER_LENGTH_CHECK_STYLE, checkStyleTwoParameters);
+    processors.put(FILE_LENGTH_CHECK_STYLE, checkStyleTwoParameters);
+    processors.put(METHOD_LENGTH_CHECK_STYLE, checkStyleTwoParameters);
+    processors.put(PARAMETER_NUMBER_CHECK_STYLE, checkStyleOneParameter);
+    processors.put(MISSING_SWITCH_DEFAULT_CHECK_STYLE, checkStyleOneParameter);
+    processors.put(NESTED_IF_DEPTH_CHECK_STYLE, checkStyleTwoParameters);
+    processors.put(NESTED_TRY_DEPTH_CHECK_STYLE, checkStyleTwoParameters);
+    processors.put(BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE,
+        checkStyleTwoParameters);
+    processors.put(CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE,
+        checkStyleTwoParameters);
+    processors.put(CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE,
+        checkStyleTwoParameters);
+    processors.put(CYCLOMATIC_COMPLEXITY_CHECK_STYLE, checkStyleTwoParameters);
 
-        VIOLATION_DEBT_COST_PROCESSOR = Collections.unmodifiableMap(processors);
-    }
+    VIOLATION_DEBT_COST_PROCESSOR = Collections.unmodifiableMap(processors);
+  }
 
-    /**
-     * Avoid accidentally instantiation.
-     */
-    private ViolationsMapper() {
-        throw new AssertionError();
-    }
+  /**
+   * Avoid accidentally instantiation.
+   */
+  private ViolationsMapper() {
+    throw new AssertionError();
+  }
 
-    public static DebtType getDebtType(Violation violation) {
+  public static DebtType getDebtType(Violation violation) {
 
-        Preconditions.checkNotNull(violation);
+    Preconditions.checkNotNull(violation);
 
-        return VIOLATION_DEBT.get(violation.getRule().getKey());
-    }
+    return VIOLATION_DEBT.get(violation.getRule().getKey());
+  }
 
-    public static DebtCostProcessor getDebtCostProcessor(Violation violation) {
+  public static DebtCostProcessor getDebtCostProcessor(Violation violation) {
 
-        Preconditions.checkNotNull(violation);
+    Preconditions.checkNotNull(violation);
 
-        return VIOLATION_DEBT_COST_PROCESSOR.get(violation.getRule().getKey());
-    }
+    return VIOLATION_DEBT_COST_PROCESSOR.get(violation.getRule().getKey());
+  }
 
 }

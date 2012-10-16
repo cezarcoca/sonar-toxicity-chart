@@ -29,7 +29,8 @@ import org.w3c.dom.Node;
  */
 public interface ToxicityNode {
 
-    Node convertToXml(Document xml);
-    void readFromXml(Node node);
+  Node convertToXml(Document xml);
+
+  void readFromXml(Node node);
 
 }

@@ -39,120 +39,122 @@ import java.math.RoundingMode;
  */
 public class Debt implements ToxicityNode, Comparable<Debt> {
 
-    private static final String COST_ATTR = "cost";
-    private static final String KEY_ATTR = "key";
-    private static final String COLOR_ATTR = "color";
+  private static final String COST_ATTR = "cost";
+  private static final String KEY_ATTR = "key";
+  private static final String COLOR_ATTR = "color";
 
-    public static final String NODE_NAME = "debt";
+  public static final String NODE_NAME = "debt";
 
-    private BigDecimal cost;
-    private DebtType debtType;
+  private BigDecimal cost;
+  private DebtType debtType;
 
-    Debt() {
-        this.cost = BigDecimal.ZERO;
+  Debt() {
+    this.cost = BigDecimal.ZERO;
+  }
+
+  public Debt(DebtType debtType) {
+
+    this();
+
+    Preconditions.checkNotNull(debtType);
+    this.debtType = debtType;
+  }
+
+  private BigDecimal normalize(BigDecimal in) {
+    return in.setScale(2, RoundingMode.HALF_UP);
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.sonar.plugins.toxicity.model.Node#convertToXml()
+   */
+  public Node convertToXml(Document xml) {
+
+    Preconditions.checkNotNull(xml);
+
+    Element node = xml.createElement(NODE_NAME);
+    node.setAttribute(COST_ATTR, getCost().toPlainString());
+    node.setAttribute(KEY_ATTR, getDebtType().getKey());
+    node.setAttribute(COLOR_ATTR, getDebtType().getColorHexCode());
+
+    return node;
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.sonar.plugins.toxicity.model.ToxicityNode#readFromXml(org.w3c.dom
+   * .Node)
+   */
+  public void readFromXml(Node node) {
+
+    Preconditions.checkNotNull(node);
+
+    String key = node.getAttributes().getNamedItem(KEY_ATTR).getNodeValue();
+    debtType = DebtType.getDebtTypeByKey(key);
+    cost = normalize(new BigDecimal(node.getAttributes()
+        .getNamedItem(COST_ATTR).getNodeValue()));
+  }
+
+  public BigDecimal getCost() {
+    return cost;
+  }
+
+  public DebtType getDebtType() {
+    return debtType;
+  }
+
+  public void addCost(BigDecimal value) {
+
+    Preconditions.checkNotNull(value);
+
+    cost = normalize(cost.add(value, MathContext.DECIMAL32));
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hashCode(cost, debtType);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
     }
 
-    public Debt(DebtType debtType) {
+    Debt other = (Debt) obj;
 
-        this();
+    return Objects.equal(cost, other.cost)
+        && Objects.equal(debtType, other.debtType);
+  }
 
-        Preconditions.checkNotNull(debtType);
-        this.debtType = debtType;
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  public int compareTo(Debt o) {
+
+    if (o == null) {
+      return 1;
     }
 
-    private BigDecimal normalize(BigDecimal in) {
-        return in.setScale(2, RoundingMode.HALF_UP);
-    }
+    return o.getCost().compareTo(cost);
+  }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.sonar.plugins.toxicity.model.Node#convertToXml()
-     */
-    public Node convertToXml(Document xml) {
-
-        Preconditions.checkNotNull(xml);
-
-        Element node = xml.createElement(NODE_NAME);
-        node.setAttribute(COST_ATTR, getCost().toPlainString());
-        node.setAttribute(KEY_ATTR, getDebtType().getKey());
-        node.setAttribute(COLOR_ATTR, getDebtType().getColorHexCode());
-
-        return node;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.sonar.plugins.toxicity.model.ToxicityNode#readFromXml(org.w3c.dom
-     * .Node)
-     */
-    public void readFromXml(Node node) {
-
-        Preconditions.checkNotNull(node);
-
-        String key = node.getAttributes().getNamedItem(KEY_ATTR).getNodeValue();
-        debtType = DebtType.getDebtTypeByKey(key);
-        cost = normalize(new BigDecimal(node.getAttributes()
-                .getNamedItem(COST_ATTR).getNodeValue()));
-    }
-
-    public BigDecimal getCost() {
-        return cost;
-    }
-
-    public DebtType getDebtType() {
-        return debtType;
-    }
-
-    public void addCost(BigDecimal value) {
-
-        Preconditions.checkNotNull(value);
-
-        cost = normalize(cost.add(value, MathContext.DECIMAL32));
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hashCode(cost, debtType);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Debt other = (Debt) obj;
-
-        return Objects.equal(cost, other.cost) && Objects.equal(debtType, other.debtType);
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Debt o) {
-
-        if(o == null) {
-            return 1;
-        }
-
-        return o.getCost().compareTo(cost);
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append(KEY_ATTR, debtType)
-                .append(COST_ATTR, cost).toString();
-    }
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).append(KEY_ATTR, debtType)
+        .append(COST_ATTR, cost).toString();
+  }
 
 }

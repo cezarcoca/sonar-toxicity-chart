@@ -32,34 +32,34 @@ import org.sonar.plugins.toxicity.chart.ToxicityChart;
 import java.util.ArrayList;
 import java.util.List;
 
-@Properties ({
-    @Property(key = ToxicityChartPlugin.TC_THRESHOLD, defaultValue = ToxicityChartPlugin.TC_THRESHOLD_DEFAULT, name = "Toxicity Chart threshold", description = "Toxicity Chart threshold.")
-})
+@Properties({ @Property(key = ToxicityChartPlugin.TC_THRESHOLD, defaultValue = ToxicityChartPlugin.TC_THRESHOLD_DEFAULT,
+  name = "Toxicity Chart threshold", description = "Toxicity Chart threshold.") })
 public class ToxicityChartPlugin extends SonarPlugin {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(ToxicityChartPlugin.class);
+  protected static final Logger LOGGER = LoggerFactory
+      .getLogger(ToxicityChartPlugin.class);
 
-    public static final String PLUGIN_NAME = "Toxicity Chart";
-    public static final String PLUGIN_KEY = "toxicity-chart";
+  public static final String PLUGIN_NAME = "Toxicity Chart";
+  public static final String PLUGIN_KEY = "toxicity-chart";
 
-    public static final String TC_THRESHOLD = "threshold";
-    public static final String TC_THRESHOLD_DEFAULT = "1";
+  public static final String TC_THRESHOLD = "threshold";
+  public static final String TC_THRESHOLD_DEFAULT = "1";
 
-    public ToxicityChartPlugin() {
-        super();
-        LOGGER.debug("Toxicity Chart Plugin successfully created.");
-    }
+  public ToxicityChartPlugin() {
+    super();
+    LOGGER.debug("Toxicity Chart Plugin successfully created.");
+  }
 
-    /**
-     * @return the list of extensions of the plugin
-     */
-    public List<Class<? extends Extension>> getExtensions() {
-        List<Class<? extends Extension>> extensions = new ArrayList<Class<? extends Extension>>();
-        extensions.add(ToxicityChartDecorator.class);
-        extensions.add(ToxicityChartAggregator.class);
-        extensions.add(ToxicityChartPage.class);
-        extensions.add(ToxicityChartMetrics.class);
-        extensions.add(ToxicityChart.class);
-        return extensions;
-    }
+  /**
+   * @return the list of extensions of the plugin
+   */
+  public List<Class<? extends Extension>> getExtensions() {
+    List<Class<? extends Extension>> extensions = new ArrayList<Class<? extends Extension>>();
+    extensions.add(ToxicityChartDecorator.class);
+    extensions.add(ToxicityChartAggregator.class);
+    extensions.add(ToxicityChartPage.class);
+    extensions.add(ToxicityChartMetrics.class);
+    extensions.add(ToxicityChart.class);
+    return extensions;
+  }
 }

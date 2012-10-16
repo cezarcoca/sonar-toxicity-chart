@@ -25,31 +25,30 @@ import org.sonar.api.web.NavigationSection;
 import org.sonar.api.web.AbstractRubyTemplate;
 import org.sonar.api.web.RubyRailsPage;
 
-@NavigationSection({ NavigationSection.RESOURCE})
+@NavigationSection({ NavigationSection.RESOURCE })
 public class ToxicityChartPage extends AbstractRubyTemplate implements
-        RubyRailsPage {
+    RubyRailsPage {
 
-    /**
-     * @return the page id
-     */
-    public String getId() {
-        return ToxicityChartPlugin.PLUGIN_KEY;
-    }
+  /**
+   * @return the page id
+   */
+  public String getId() {
+    return ToxicityChartPlugin.PLUGIN_KEY;
+  }
 
-    /**
-     * @return the page title
-     */
-    public String getTitle() {
-        return ToxicityChartPlugin.PLUGIN_NAME;
-    }
+  /**
+   * @return the page title
+   */
+  public String getTitle() {
+    return ToxicityChartPlugin.PLUGIN_NAME;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getTemplatePath() {
-        return "/toxicity_page.html.erb";
-    }
-
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected String getTemplatePath() {
+    return "/toxicity_page.html.erb";
+  }
 
 }

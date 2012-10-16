@@ -56,113 +56,115 @@ import java.util.Set;
 
 public class ToxicityChart extends AbstractChart {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(ToxicityChart.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ToxicityChart.class);
 
-    private static final String KEY = "toxicitychart";
-    private static final int DEFAULT_WIDTH = 1024;
-    private static final int DEFAULT_HEIGHT = 576;
-    private static final Float X_AXIS_FONT_SIZE = Float.valueOf("7");
+  private static final String KEY = "toxicitychart";
+  private static final int DEFAULT_WIDTH = 1024;
+  private static final int DEFAULT_HEIGHT = 576;
+  private static final Float X_AXIS_FONT_SIZE = Float.valueOf("7");
 
-    @VisibleForTesting
-    static final String MEASURE_ID = "v";
+  @VisibleForTesting
+  static final String MEASURE_ID = "v";
 
-    private Configuration configuration;
-    private MeasureDao dao;
+  private Configuration configuration;
+  private MeasureDao dao;
 
-    public ToxicityChart(DatabaseSession session, Configuration configuration) {
-        super();
-        this.configuration = configuration;
-        this.dao = new MeasureDao(session);
+  public ToxicityChart(DatabaseSession session, Configuration configuration) {
+    super();
+    this.configuration = configuration;
+    this.dao = new MeasureDao(session);
+  }
+
+  public String getKey() {
+
+    return KEY;
+  }
+
+  @Override
+  protected Plot getPlot(ChartParameters params) {
+
+    MeasureData data = dao.getMeasureDataById(params.getValue(MEASURE_ID));
+    Toxicity toxicity = ToxicityXmlParser
+        .convertXmlToToxicity(data != null ? data.getData() : null);
+
+    Set<String> seriesOrderedByFirstUse = new LinkedHashSet<String>();
+    CategoryDataset dataset = createDataset(toxicity, seriesOrderedByFirstUse);
+
+    JFreeChart chart = createChart(dataset);
+    final ChartPanel chartPanel = new ChartPanel(chart);
+
+    java.awt.Dimension size = new java.awt.Dimension(DEFAULT_WIDTH,
+        DEFAULT_HEIGHT);
+    chartPanel.setPreferredSize(size);
+    chartPanel.setMinimumSize(size);
+    chartPanel.setMouseZoomable(true);
+
+    CategoryPlot plot = (CategoryPlot) chart.getPlot();
+    CategoryItemRenderer renderer = plot.getRenderer();
+    plot.setNoDataMessage("No debts found");
+
+    int i = 0;
+    for (String name : seriesOrderedByFirstUse) {
+      DebtType type = DebtType.getDebtTypeByKey(name);
+      renderer.setSeriesPaint(i++, Color.decode(type.getColorHexCode()));
     }
 
-    public String getKey() {
+    CategoryAxis xAxis = (CategoryAxis) plot.getDomainAxis();
+    xAxis.setLabelFont(xAxis.getLabelFont().deriveFont(X_AXIS_FONT_SIZE));
+    xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
 
-        return KEY;
+    chart.setBackgroundPaint(ChartColor.WHITE);
+
+    return plot;
+  }
+
+  private CategoryDataset createDataset(Toxicity toxicity, Set<String> series) {
+
+    DefaultCategoryDataset result = new DefaultCategoryDataset();
+
+    List<Source> resources = toxicity.getSources(getThreshold());
+    for (int i = 0; i < resources.size(); i++) {
+      Source item = resources.get(i);
+      String name = Integer.valueOf(i + 1).toString();
+      for (Debt debt : item.getDebts()) {
+        result.addValue(debt.getCost().doubleValue(), debt.getDebtType()
+            .getKey(), name);
+        series.add(debt.getDebtType().getKey());
+      }
     }
 
-    @Override
-    protected Plot getPlot(ChartParameters params) {
+    return result;
+  }
 
-        MeasureData data = dao.getMeasureDataById(params.getValue(MEASURE_ID));
-        Toxicity toxicity = ToxicityXmlParser.convertXmlToToxicity(data != null ? data.getData() : null);
+  private JFreeChart createChart(final CategoryDataset dataset) {
+    final JFreeChart chart = ChartFactory.createStackedBarChart("", "", "",
+        dataset, PlotOrientation.VERTICAL, true, true, false);
+    return chart;
+  }
 
-        Set<String> seriesOrderedByFirstUse = new LinkedHashSet<String>();
-        CategoryDataset dataset = createDataset(toxicity,
-                seriesOrderedByFirstUse);
+  @VisibleForTesting
+  BigDecimal getThreshold() {
 
-        JFreeChart chart = createChart(dataset);
-        final ChartPanel chartPanel = new ChartPanel(chart);
-
-        java.awt.Dimension size = new java.awt.Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT);
-        chartPanel.setPreferredSize(size);
-        chartPanel.setMinimumSize(size);
-        chartPanel.setMouseZoomable(true);
-
-        CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        CategoryItemRenderer renderer = plot.getRenderer();
-        plot.setNoDataMessage("No debts found");
-
-        int i = 0;
-        for (String name : seriesOrderedByFirstUse) {
-            DebtType type = DebtType.getDebtTypeByKey(name);
-            renderer.setSeriesPaint(i++, Color.decode(type.getColorHexCode()));
-        }
-
-        CategoryAxis xAxis = (CategoryAxis)plot.getDomainAxis();
-        xAxis.setLabelFont(xAxis.getLabelFont().deriveFont(new Float(X_AXIS_FONT_SIZE)));
-        xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-
-        chart.setBackgroundPaint(ChartColor.WHITE);
-
-        return plot;
+    String threshold = configuration.getString(
+        ToxicityChartPlugin.TC_THRESHOLD,
+        ToxicityChartPlugin.TC_THRESHOLD_DEFAULT);
+    BigDecimal value;
+    try {
+      value = new BigDecimal(threshold);
+    } catch (NumberFormatException e) {
+      value = new BigDecimal(ToxicityChartPlugin.TC_THRESHOLD_DEFAULT);
     }
 
-    private CategoryDataset createDataset(Toxicity toxicity, Set<String> series) {
+    LOGGER.info("Threshold set for Toxicity Chart is: {}",
+        value.toPlainString());
 
-        DefaultCategoryDataset result = new DefaultCategoryDataset();
+    return value;
+  }
 
-        List<Source> resources = toxicity.getSources(getThreshold());
-        for (int i = 0; i < resources.size(); i++) {
-            Source item = resources.get(i);
-            String name = Integer.valueOf(i + 1).toString();
-            for (Debt debt : item.getDebts()) {
-                result.addValue(debt.getCost().doubleValue(), debt.getDebtType().getKey(), name);
-                series.add(debt.getDebtType().getKey());
-            }
-        }
-
-        return result;
-    }
-
-    private JFreeChart createChart(final CategoryDataset dataset) {
-        final JFreeChart chart = ChartFactory.createStackedBarChart("", "", "",
-                dataset, PlotOrientation.VERTICAL, true, true, false);
-        return chart;
-    }
-
-    @VisibleForTesting
-    BigDecimal getThreshold() {
-
-        String threshold = configuration.getString(
-                ToxicityChartPlugin.TC_THRESHOLD,
-                ToxicityChartPlugin.TC_THRESHOLD_DEFAULT);
-        BigDecimal value;
-        try {
-            value = new BigDecimal(threshold);
-        } catch (NumberFormatException e) {
-            value = new BigDecimal(ToxicityChartPlugin.TC_THRESHOLD_DEFAULT);
-        }
-
-        LOGGER.info("Threshold set for Toxicity Chart is: {}", value.toPlainString());
-
-        return value;
-    }
-
-    @VisibleForTesting
-    void setDao(MeasureDao dao) {
-        this.dao = dao;
-    }
-
+  @VisibleForTesting
+  void setDao(MeasureDao dao) {
+    this.dao = dao;
+  }
 
 }

@@ -41,114 +41,124 @@ import java.util.List;
 /**
  * @author ccoca
  *
+ *         Note: this class has a natural ordering that is inconsistent with
+ *         equals.
+ *
  */
 public class Source implements ToxicityNode, Comparable<Source> {
 
-    /**
+  /**
      *
      */
-    private static final String NAME_ATTR = "name";
-    private static final String TOTAL_ATTR = "total";
-    public static final String NODE_NAME = "source";
+  private static final String NAME_ATTR = "name";
+  private static final String TOTAL_ATTR = "total";
+  public static final String NODE_NAME = "source";
 
-    private List<Debt> debts;
-    private String name;
+  private List<Debt> debts;
+  private String name;
 
-    Source() {
-        this("Unknown");
+  Source() {
+    this("Unknown");
+  }
+
+  public Source(String name) {
+    super();
+
+    Preconditions.checkNotNull(name);
+
+    this.name = name;
+    this.debts = new ArrayList<Debt>();
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.sonar.plugins.toxicity.model.Node#convertToXml()
+   */
+  public Node convertToXml(Document xml) {
+
+    Preconditions.checkNotNull(xml);
+
+    Element node = xml.createElement(NODE_NAME);
+    node.setAttribute(NAME_ATTR, getName());
+    node.setAttribute(TOTAL_ATTR, getTotal().toPlainString());
+
+    Collections.sort(debts);
+    for (Debt debt : debts) {
+      node.appendChild(debt.convertToXml(xml));
     }
 
-    public Source(String name) {
-        super();
+    return node;
+  }
 
-        Preconditions.checkNotNull(name);
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * org.sonar.plugins.toxicity.model.ToxicityNode#readFromXml(org.w3c.dom.Node)
+   */
+  public void readFromXml(Node node) {
 
-        this.name = name;
-        this.debts = new ArrayList<Debt>();
+    Preconditions.checkNotNull(node);
+
+    name = node.getAttributes().getNamedItem(NAME_ATTR).getNodeValue();
+
+    debts.clear();
+
+    NodeList nodes = node.getChildNodes();
+    for (int i = 0; i < nodes.getLength(); i++) {
+      Node n = nodes.item(i);
+      if (Debt.NODE_NAME.equals(n.getNodeName())) {
+        Debt debt = new Debt();
+        debt.readFromXml(n);
+        addDebt(debt);
+      }
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  public int compareTo(Source o) {
+
+    if (o == null) {
+      return 1;
     }
 
-    /* (non-Javadoc)
-     * @see org.sonar.plugins.toxicity.model.Node#convertToXml()
-     */
-    public Node convertToXml(Document xml) {
+    return o.getTotal().compareTo(getTotal());
+  }
 
-        Preconditions.checkNotNull(xml);
+  public void addDebt(Debt debt) {
 
-        Element node = xml.createElement(NODE_NAME);
-        node.setAttribute(NAME_ATTR, getName());
-        node.setAttribute(TOTAL_ATTR, getTotal().toPlainString());
+    Preconditions.checkNotNull(debt);
 
-        Collections.sort(debts);
-        for (Debt debt : debts) {
-            node.appendChild(debt.convertToXml(xml));
-        }
+    debts.add(debt);
+  }
 
-        return node;
+  public List<Debt> getDebts() {
+    return Collections.unmodifiableList(debts);
+  }
+
+  public BigDecimal getTotal() {
+
+    BigDecimal total = BigDecimal.ZERO;
+    for (Debt debt : debts) {
+      total = total.add(debt.getCost(), MathContext.DECIMAL32);
     }
+    return total;
+  }
 
-    /* (non-Javadoc)
-     * @see org.sonar.plugins.toxicity.model.ToxicityNode#readFromXml(org.w3c.dom.Node)
-     */
-    public void readFromXml(Node node) {
+  public String getName() {
+    return name;
+  }
 
-        Preconditions.checkNotNull(node);
+  @Override
+  public String toString() {
 
-        name = node.getAttributes().getNamedItem(NAME_ATTR).getNodeValue();
-
-        debts.clear();
-
-        NodeList nodes = node.getChildNodes();
-        for(int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-            if(Debt.NODE_NAME.equals(n.getNodeName())) {
-                Debt debt = new Debt();
-                debt.readFromXml(n);
-                addDebt(debt);
-            }
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Source o) {
-
-        if(o == null) {
-            return 1;
-        }
-
-        return o.getTotal().compareTo(getTotal());
-    }
-
-    public void addDebt(Debt debt) {
-
-        Preconditions.checkNotNull(debt);
-
-        debts.add(debt);
-    }
-
-    public List<Debt> getDebts() {
-        return Collections.unmodifiableList(debts);
-    }
-
-    public BigDecimal getTotal() {
-
-        BigDecimal total = BigDecimal.ZERO;
-        for (Debt debt : debts) {
-            total = total.add(debt.getCost(), MathContext.DECIMAL32);
-        }
-        return total;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-
-        return new ToStringBuilder(this).append("total", getTotal())
-                .append(NAME_ATTR, name).append("debts", debts).toString();
-    }
+    return new ToStringBuilder(this).append("total", getTotal())
+        .append(NAME_ATTR, name).append("debts", debts).toString();
+  }
 
 }

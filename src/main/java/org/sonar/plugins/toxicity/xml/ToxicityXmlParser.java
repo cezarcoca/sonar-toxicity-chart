@@ -41,47 +41,48 @@ import java.io.IOException;
  */
 public final class ToxicityXmlParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ToxicityXmlParser.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ToxicityXmlParser.class);
 
-    /**
-     * Avoid accidentally instantiation.
-     */
-    private ToxicityXmlParser() {
-        throw new AssertionError();
+  /**
+   * Avoid accidentally instantiation.
+   */
+  private ToxicityXmlParser() {
+    throw new AssertionError();
+  }
+
+  /**
+   * Parse the XML input and create a new {@link Toxicity} object. If input XML
+   * is invalid, an empty {@link Toxicity} is returned.
+   *
+   * @param xml
+   * @return
+   */
+  public static Toxicity convertXmlToToxicity(@Nullable byte[] xml) {
+
+    Toxicity toxicity = new Toxicity();
+
+    if (xml == null) {
+      return toxicity;
     }
 
-    /**
-     * Parse the XML input and create a new {@link Toxicity} object. If input
-     * XML is invalid, an empty {@link Toxicity} is returned.
-     *
-     * @param xml
-     * @return
-     */
-    public static Toxicity convertXmlToToxicity(@Nullable byte[] xml) {
+    try {
 
-        Toxicity toxicity = new Toxicity();
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(new ByteArrayInputStream(xml));
 
-        if(xml == null) {
-            return toxicity;
-        }
+      doc.getDocumentElement().normalize();
+      toxicity.readFromXml(doc.getDocumentElement());
 
-        try {
-
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new ByteArrayInputStream(xml));
-
-            doc.getDocumentElement().normalize();
-            toxicity.readFromXml(doc.getDocumentElement());
-
-        } catch (ParserConfigurationException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (SAXException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-
-        return toxicity;
+    } catch (ParserConfigurationException e) {
+      LOGGER.error(e.getMessage(), e);
+    } catch (SAXException e) {
+      LOGGER.error(e.getMessage(), e);
+    } catch (IOException e) {
+      LOGGER.error(e.getMessage(), e);
     }
+
+    return toxicity;
+  }
 }

@@ -26,5 +26,5 @@ import java.math.BigDecimal;
 
 public interface DebtCostProcessor {
 
-    BigDecimal getCost(Violation violation);
+  BigDecimal getCost(Violation violation);
 }

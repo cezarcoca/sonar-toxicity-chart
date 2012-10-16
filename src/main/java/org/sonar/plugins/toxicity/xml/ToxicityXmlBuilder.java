@@ -45,49 +45,50 @@ import java.io.OutputStream;
  */
 public final class ToxicityXmlBuilder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ToxicityXmlBuilder.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ToxicityXmlBuilder.class);
 
-    /**
-     * Avoid accidentally instantiation.
-     */
-    private ToxicityXmlBuilder() {
-        throw new AssertionError();
+  /**
+   * Avoid accidentally instantiation.
+   */
+  private ToxicityXmlBuilder() {
+    throw new AssertionError();
+  }
+
+  public static byte[] convertToxicityToXml(Toxicity toxicity) {
+
+    Preconditions.checkNotNull(toxicity);
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    try {
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document xml = builder.newDocument();
+
+      xml.appendChild(toxicity.convertToXml(xml));
+      writeXml(xml, baos);
+
+    } catch (ParserConfigurationException e) {
+      LOGGER.error(e.getMessage(), e);
     }
 
-    public static byte[] convertToxicityToXml(Toxicity toxicity) {
+    return baos.toByteArray();
+  }
 
-        Preconditions.checkNotNull(toxicity);
+  private static void writeXml(Document xml, OutputStream out) {
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try {
 
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document xml = builder.newDocument();
+      TransformerFactory factory = TransformerFactory.newInstance();
+      Transformer transformer = factory.newTransformer();
 
-            xml.appendChild(toxicity.convertToXml(xml));
-            writeXml(xml, baos);
+      transformer.transform(new DOMSource(xml), new StreamResult(out));
 
-        } catch (ParserConfigurationException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-
-        return baos.toByteArray();
+    } catch (TransformerConfigurationException e) {
+      LOGGER.error(e.getMessage(), e);
+    } catch (TransformerException e) {
+      LOGGER.error(e.getMessage(), e);
     }
-
-    private static void writeXml(Document xml, OutputStream out) {
-
-        try {
-
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
-
-            transformer.transform(new DOMSource(xml), new StreamResult(out));
-
-        } catch (TransformerConfigurationException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (TransformerException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-    }
+  }
 }

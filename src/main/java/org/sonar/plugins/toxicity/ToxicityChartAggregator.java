@@ -32,24 +32,27 @@ import org.sonar.plugins.toxicity.xml.ToxicityXmlBuilder;
 
 public class ToxicityChartAggregator implements PostJob {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(ToxicityChartAggregator.class);
+  protected static final Logger LOGGER = LoggerFactory
+      .getLogger(ToxicityChartAggregator.class);
 
-    public void executeOn(Project project, SensorContext context) {
+  public void executeOn(Project project, SensorContext context) {
 
-        LOGGER.info("Starting post-job phase for: {} project.", context.toString());
+    LOGGER.info("Starting post-job phase for: {} project.", context.toString());
 
-        Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
+    Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
 
-        context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_STATUS, new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity))));
-        context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE, toxicity.getAverageCost()));
+    context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_STATUS,
+        new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity))));
+    context
+        .saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE,
+            toxicity.getAverageCost()));
 
-        for (DebtType debt : DebtType.values()) {
-            context.saveMeasure(new Measure(
-                    ToxicityChartMetrics.getMetricByDebtType(debt),
-                    toxicity.getTotalCostByDebt(debt).doubleValue()));
+    for (DebtType debt : DebtType.values()) {
+      context.saveMeasure(new Measure(ToxicityChartMetrics
+          .getMetricByDebtType(debt), toxicity.getTotalCostByDebt(debt).doubleValue()));
 
-        }
-
-        LOGGER.info("Post-job phase finished successfully.");
     }
+
+    LOGGER.info("Post-job phase finished successfully.");
+  }
 }

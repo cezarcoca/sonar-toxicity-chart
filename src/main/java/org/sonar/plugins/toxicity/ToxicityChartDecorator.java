@@ -28,15 +28,15 @@ import org.sonar.api.rules.Violation;
 
 public class ToxicityChartDecorator implements Decorator {
 
-    public boolean shouldExecuteOnProject(Project project) {
-        return true;
-    }
+  public boolean shouldExecuteOnProject(Project project) {
+    return true;
+  }
 
-    public void decorate(@SuppressWarnings("rawtypes") Resource resource,
-            DecoratorContext context) {
+  public void decorate(@SuppressWarnings("rawtypes") Resource resource,
+      DecoratorContext context) {
 
-        for (Violation violation : context.getViolations()) {
-            DebtsFilter.getInstance().filter(violation);
-        }
+    for (Violation violation : context.getViolations()) {
+      DebtsFilter.getInstance().filter(violation);
     }
+  }
 }

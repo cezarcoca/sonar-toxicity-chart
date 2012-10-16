@@ -20,14 +20,13 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-
 import org.sonar.api.rules.Violation;
 
 import java.math.BigDecimal;
 
 public class CheckStyleOneParameterCostProcessor implements DebtCostProcessor {
 
-    public BigDecimal getCost(Violation violation) {
-        return BigDecimal.ONE;
-    }
+  public BigDecimal getCost(Violation violation) {
+    return BigDecimal.ONE;
+  }
 }

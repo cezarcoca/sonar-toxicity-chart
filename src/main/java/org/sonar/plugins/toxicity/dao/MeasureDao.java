@@ -35,39 +35,40 @@ import javax.persistence.Query;
  */
 public class MeasureDao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MeasureDao.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(MeasureDao.class);
 
-    private DatabaseSession session;
+  private DatabaseSession session;
 
-    public MeasureDao(DatabaseSession session) {
-        super();
-        this.session = session;
+  public MeasureDao(DatabaseSession session) {
+    super();
+    this.session = session;
+  }
+
+  /**
+   * Retrieves the measure data of the given measure model id.
+   *
+   * @param id
+   * @return the measure data or null if no data are saved for the given id
+   */
+  public MeasureData getMeasureDataById(String id) {
+
+    MeasureData data;
+    try {
+      session.start();
+      Query query = session
+          .createQuery("select m from MeasureModel m where m.id = ?");
+      query.setParameter(1, Long.valueOf(id));
+
+      MeasureModel measure = (MeasureModel) query.getSingleResult();
+      data = measure.getMeasureData();
+    } catch (PersistenceException e) {
+      LOGGER.error(e.getMessage(), e);
+      data = null;
+    } finally {
+      session.stop();
     }
 
-    /**
-     * Retrieves the measure data of the given measure model id.
-     *
-     * @param id
-     * @return the measure data or null if no data are saved for the given id
-     */
-    public MeasureData getMeasureDataById(String id) {
-
-        MeasureData data;
-        try {
-            session.start();
-            Query query = session
-                    .createQuery("select m from MeasureModel m where m.id = ?");
-            query.setParameter(1, Long.valueOf(id));
-
-            MeasureModel measure = (MeasureModel) query.getSingleResult();
-            data = measure.getMeasureData();
-        } catch (PersistenceException e) {
-            LOGGER.error(e.getMessage(), e);
-            data = null;
-        } finally {
-            session.stop();
-        }
-
-        return data;
-    }
+    return data;
+  }
 }
