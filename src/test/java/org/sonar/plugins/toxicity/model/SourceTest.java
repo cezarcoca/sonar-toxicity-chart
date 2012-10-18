@@ -32,45 +32,63 @@ import org.junit.Test;
  */
 public class SourceTest {
 
-    @Test(expected=NullPointerException.class)
-    public void givenNullNameThenNullPointerShouldBeThrown() {
+  private BigDecimal BOOLEAN_COMPLEXITY_COST = new BigDecimal("3.25");
+  private BigDecimal ANNON_INNER_LENGTH_COST = new BigDecimal("7.25");
 
-        new Source(null);
-    }
+  @Test(expected = NullPointerException.class)
+  public void givenNullNameThenNullPointerShouldBeThrown() {
 
-    @Test
-    public void whenCompareIsInvokedThenDescResultShouldBeReturned() {
+    new Source(null);
+  }
 
-        Source one = new Source("one");
-        one.addDebt(ModelUtil.createDebt(BigDecimal.ONE, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
-        Source two = new Source("two");
-        two.addDebt(ModelUtil.createDebt(BigDecimal.TEN, DebtType.ANON_INNER_LENGTH));
+  @Test
+  public void whenCompareIsInvokedThenDescResultShouldBeReturned() {
 
-        Assert.assertEquals(1, one.compareTo(null));
-        Assert.assertEquals(1, one.compareTo(two));
-        Assert.assertEquals(-1, two.compareTo(one));
-        Assert.assertEquals(0, one.compareTo(one));
+    Source one = new Source("one");
+    one.addDebt(ModelUtil.createDebt(BigDecimal.ONE,
+        DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
+    Source two = new Source("two");
+    two.addDebt(ModelUtil
+        .createDebt(BigDecimal.TEN, DebtType.ANON_INNER_LENGTH));
 
-    }
+    Assert.assertEquals(1, one.compareTo(null));
+    Assert.assertEquals(1, one.compareTo(two));
+    Assert.assertEquals(-1, two.compareTo(one));
+    Assert.assertEquals(0, one.compareTo(one));
 
-    @Test
-    public void whenGetTotalIsInvokedThenSumOfDebtsCostShouldBeReturned() {
+  }
 
-        BigDecimal booleanComplexityCost = new BigDecimal("3.25");
-        BigDecimal annonInnerLengthCost = new BigDecimal("7.25");
-        BigDecimal total = booleanComplexityCost.add(annonInnerLengthCost);
+  @Test
+  public void whenGetTotalIsInvokedThenSumOfDebtsCostShouldBeReturned() {
 
-        Source source = new Source("compile.unit");
-        source.addDebt(ModelUtil.createDebt(booleanComplexityCost, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
-        source.addDebt(ModelUtil.createDebt(annonInnerLengthCost, DebtType.ANON_INNER_LENGTH));
+    BigDecimal total = BOOLEAN_COMPLEXITY_COST.add(ANNON_INNER_LENGTH_COST);
 
-        Assert.assertEquals(total, source.getTotal());
-    }
+    Source source = new Source("compile.unit");
+    source.addDebt(ModelUtil.createDebt(BOOLEAN_COMPLEXITY_COST,
+        DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
+    source.addDebt(ModelUtil.createDebt(ANNON_INNER_LENGTH_COST,
+        DebtType.ANON_INNER_LENGTH));
 
-    @Test(expected=NullPointerException.class)
-    public void whenNullDebtIsAddedThenNullPointerExceptionShouldBeThrown() {
+    Assert.assertEquals(total, source.getTotal());
+  }
 
-        new Source().addDebt(null);
-    }
+  @Test(expected = NullPointerException.class)
+  public void whenNullDebtIsAddedThenNullPointerExceptionShouldBeThrown() {
 
+    new Source().addDebt(null);
+  }
+
+  @Test
+  public void whenDebtTypeAlreadyExistsThenDebtCostIsUpdated() {
+
+    Source source = new Source("compile.unit");
+    source.addDebt(ModelUtil.createDebt(BOOLEAN_COMPLEXITY_COST,
+        DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
+    source.addDebt(ModelUtil.createDebt(BOOLEAN_COMPLEXITY_COST,
+        DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
+
+    BigDecimal sum = BOOLEAN_COMPLEXITY_COST.add(BOOLEAN_COMPLEXITY_COST);
+
+    Assert.assertTrue(source.getDebts().get(0).getCost().compareTo(sum) == 0);
+  }
 }

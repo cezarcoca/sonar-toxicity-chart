@@ -21,7 +21,6 @@
 package org.sonar.plugins.toxicity.chart;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.commons.configuration.Configuration;
 import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -38,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.charts.AbstractChart;
 import org.sonar.api.charts.ChartParameters;
+import org.sonar.api.config.Settings;
 import org.sonar.api.database.DatabaseSession;
 import org.sonar.api.database.model.MeasureData;
 import org.sonar.plugins.toxicity.ToxicityChartPlugin;
@@ -59,7 +59,7 @@ public class ToxicityChart extends AbstractChart {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ToxicityChart.class);
 
-  private static final String KEY = "toxicitychart";
+  static final String KEY = "toxicitychart";
   private static final int DEFAULT_WIDTH = 1024;
   private static final int DEFAULT_HEIGHT = 576;
   private static final Float X_AXIS_FONT_SIZE = Float.valueOf("7");
@@ -67,12 +67,12 @@ public class ToxicityChart extends AbstractChart {
   @VisibleForTesting
   static final String MEASURE_ID = "v";
 
-  private Configuration configuration;
+  private Settings settings;
   private MeasureDao dao;
 
-  public ToxicityChart(DatabaseSession session, Configuration configuration) {
+  public ToxicityChart(DatabaseSession session, Settings settings) {
     super();
-    this.configuration = configuration;
+    this.settings = settings;
     this.dao = new MeasureDao(session);
   }
 
@@ -85,20 +85,12 @@ public class ToxicityChart extends AbstractChart {
   protected Plot getPlot(ChartParameters params) {
 
     MeasureData data = dao.getMeasureDataById(params.getValue(MEASURE_ID));
-    Toxicity toxicity = ToxicityXmlParser
-        .convertXmlToToxicity(data != null ? data.getData() : null);
+    Toxicity toxicity = ToxicityXmlParser.convertXmlToToxicity(data != null ? data.getData() : null);
 
-    Set<String> seriesOrderedByFirstUse = new LinkedHashSet<String>();
+    LinkedHashSet<String> seriesOrderedByFirstUse = new LinkedHashSet<String>();
     CategoryDataset dataset = createDataset(toxicity, seriesOrderedByFirstUse);
 
-    JFreeChart chart = createChart(dataset);
-    final ChartPanel chartPanel = new ChartPanel(chart);
-
-    java.awt.Dimension size = new java.awt.Dimension(DEFAULT_WIDTH,
-        DEFAULT_HEIGHT);
-    chartPanel.setPreferredSize(size);
-    chartPanel.setMinimumSize(size);
-    chartPanel.setMouseZoomable(true);
+    JFreeChart chart = getChart(dataset);
 
     CategoryPlot plot = (CategoryPlot) chart.getPlot();
     CategoryItemRenderer renderer = plot.getRenderer();
@@ -119,7 +111,20 @@ public class ToxicityChart extends AbstractChart {
     return plot;
   }
 
-  private CategoryDataset createDataset(Toxicity toxicity, Set<String> series) {
+  private JFreeChart getChart(CategoryDataset dataset) {
+    JFreeChart chart = createChart(dataset);
+    final ChartPanel chartPanel = new ChartPanel(chart);
+
+    java.awt.Dimension size = new java.awt.Dimension(DEFAULT_WIDTH,
+        DEFAULT_HEIGHT);
+    chartPanel.setPreferredSize(size);
+    chartPanel.setMinimumSize(size);
+    chartPanel.setMouseZoomable(true);
+    return chart;
+  }
+
+  @VisibleForTesting
+  CategoryDataset createDataset(Toxicity toxicity, Set<String> series) {
 
     DefaultCategoryDataset result = new DefaultCategoryDataset();
 
@@ -146,9 +151,8 @@ public class ToxicityChart extends AbstractChart {
   @VisibleForTesting
   BigDecimal getThreshold() {
 
-    String threshold = configuration.getString(
-        ToxicityChartPlugin.TC_THRESHOLD,
-        ToxicityChartPlugin.TC_THRESHOLD_DEFAULT);
+    String threshold = settings.getString(ToxicityChartPlugin.TC_THRESHOLD);
+
     BigDecimal value;
     try {
       value = new BigDecimal(threshold);

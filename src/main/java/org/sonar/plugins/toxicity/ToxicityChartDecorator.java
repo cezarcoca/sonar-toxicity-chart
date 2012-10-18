@@ -20,6 +20,16 @@
 
 package org.sonar.plugins.toxicity;
 
+import com.google.common.annotations.VisibleForTesting;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.sonar.api.measures.Measure;
+import org.sonar.plugins.toxicity.model.DebtType;
+import org.sonar.plugins.toxicity.model.Toxicity;
+import org.sonar.plugins.toxicity.xml.ToxicityXmlBuilder;
+
 import org.sonar.api.batch.Decorator;
 import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.resources.Project;
@@ -28,8 +38,14 @@ import org.sonar.api.rules.Violation;
 
 public class ToxicityChartDecorator implements Decorator {
 
+  protected static final Logger LOGGER = LoggerFactory
+      .getLogger(ToxicityChartDecorator.class);
+
+  private String projectKey;
+
   public boolean shouldExecuteOnProject(Project project) {
-    return true;
+    projectKey = project.getKey();
+    return projectKey != null;
   }
 
   public void decorate(@SuppressWarnings("rawtypes") Resource resource,
@@ -38,5 +54,36 @@ public class ToxicityChartDecorator implements Decorator {
     for (Violation violation : context.getViolations()) {
       DebtsFilter.getInstance().filter(violation);
     }
+
+    if (allResourcesAreProcessed(resource)) {
+      saveMeasures(context);
+    }
+  }
+
+  @VisibleForTesting
+  boolean allResourcesAreProcessed(
+      @SuppressWarnings("rawtypes") Resource resource) {
+    return projectKey.equals(resource.getKey());
+  }
+
+  @VisibleForTesting
+  void saveMeasures(DecoratorContext context) {
+
+    LOGGER.info("Saving metrics for: {} project.", projectKey);
+
+    Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
+
+    context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_STATUS,
+        new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity))));
+    context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE,
+            toxicity.getAverageCost()));
+
+    for (DebtType debt : DebtType.values()) {
+      context.saveMeasure(new Measure(ToxicityChartMetrics
+          .getMetricByDebtType(debt), toxicity.getTotalCostByDebt(debt).doubleValue()));
+
+    }
+
+    LOGGER.info("Metrics saved successfully.");
   }
 }

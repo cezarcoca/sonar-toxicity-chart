@@ -20,6 +20,8 @@
 
 package org.sonar.plugins.toxicity.model;
 
+import com.google.common.base.Objects;
+
 import org.w3c.dom.Element;
 
 import org.w3c.dom.Document;
@@ -47,15 +49,13 @@ import java.util.List;
  */
 public class Source implements ToxicityNode, Comparable<Source> {
 
-  /**
-     *
-     */
   private static final String NAME_ATTR = "name";
   private static final String TOTAL_ATTR = "total";
   public static final String NODE_NAME = "source";
 
   private List<Debt> debts;
   private String name;
+  private BigDecimal total;
 
   Source() {
     this("Unknown");
@@ -67,6 +67,7 @@ public class Source implements ToxicityNode, Comparable<Source> {
     Preconditions.checkNotNull(name);
 
     this.name = name;
+    this.total = BigDecimal.ZERO;
     this.debts = new ArrayList<Debt>();
   }
 
@@ -104,6 +105,7 @@ public class Source implements ToxicityNode, Comparable<Source> {
     name = node.getAttributes().getNamedItem(NAME_ATTR).getNodeValue();
 
     debts.clear();
+    total = BigDecimal.ZERO;
 
     NodeList nodes = node.getChildNodes();
     for (int i = 0; i < nodes.getLength(); i++) {
@@ -133,8 +135,20 @@ public class Source implements ToxicityNode, Comparable<Source> {
   public void addDebt(Debt debt) {
 
     Preconditions.checkNotNull(debt);
+    total = total.add(debt.getCost(), MathContext.DECIMAL32);
+    addOrUpdateDebt(debt);
+  }
 
-    debts.add(debt);
+  private void addOrUpdateDebt(Debt debt) {
+
+    for (Debt d : debts) {
+      if (d.getDebtType() == debt.getDebtType()) {
+        d.addCost(debt.getCost());
+        return;
+      }
+    }
+
+    debts.add(debt);;
   }
 
   public List<Debt> getDebts() {
@@ -142,11 +156,6 @@ public class Source implements ToxicityNode, Comparable<Source> {
   }
 
   public BigDecimal getTotal() {
-
-    BigDecimal total = BigDecimal.ZERO;
-    for (Debt debt : debts) {
-      total = total.add(debt.getCost(), MathContext.DECIMAL32);
-    }
     return total;
   }
 
@@ -161,4 +170,31 @@ public class Source implements ToxicityNode, Comparable<Source> {
         .append(NAME_ATTR, name).append("debts", debts).toString();
   }
 
+  @Override
+  public int hashCode() {
+
+    return Objects.hashCode(name, total);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+
+    Source other = (Source) obj;
+
+    if(total.compareTo(other.total) != 0) {
+      return false;
+    }
+
+    return Objects.equal(name, other.name);
+  }
 }

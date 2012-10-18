@@ -20,16 +20,28 @@
 
 package org.sonar.plugins.toxicity;
 
+import org.sonar.api.resources.Project;
+
+import org.junit.After;
+
+import org.junit.Before;
+
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertFalse;
+
 import org.junit.Test;
 import org.sonar.api.batch.DecoratorContext;
+import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.Violation;
 import org.sonar.plugins.toxicity.debts.ViolationsMapper;
+import org.sonar.plugins.toxicity.model.DebtType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,25 +53,91 @@ import static org.mockito.Mockito.when;
  */
 public class ToxicityChartDecoratorTest {
 
-    @Test
-    public void whenDecorateIsInvokedThenAllViolationsShouldBeProcessed() {
+  private ToxicityChartDecorator decorator;
 
-        int count = 10;
+  @Before
+  public void setUp() {
+    decorator = new ToxicityChartDecorator();
+  }
 
-        DecoratorContext context = mock(DecoratorContext.class);
-        Resource<?> resource = mock(Resource.class);
+  @After
+  public void tearDown() {
+    decorator = null;
+  }
 
-        List<Violation> violations = new ArrayList<Violation>();
-        for (int i = 0; i < count; i++) {
-            violations.add(Violation.create(Rule.create().setKey(ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE), resource));
-        }
+  @Test
+  public void whenDecorateIsInvokedThenAllViolationsShouldBeProcessed() {
 
-        when(context.getViolations()).thenReturn(violations);
-        when(resource.getLongName()).thenReturn("org.sonar.plugins.toxicity");
+    int count = 10;
 
-        ToxicityChartDecorator decorator = new ToxicityChartDecorator();
-        decorator.decorate(resource, context);
+    DecoratorContext context = mock(DecoratorContext.class);
+    Resource<?> resource = mock(Resource.class);
+    configureProject("Java");
 
-        verify(resource, times(count)).getLongName();
+    List<Violation> violations = new ArrayList<Violation>();
+    for (int i = 0; i < count; i++) {
+      violations.add(Violation.create(
+          Rule.create().setKey(ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE), resource));
     }
+
+    when(context.getViolations()).thenReturn(violations);
+    when(resource.getLongName()).thenReturn("org.sonar.plugins.toxicity");
+
+    decorator.decorate(resource, context);
+
+    verify(resource, times(count)).getLongName();
+  }
+
+  @Test
+  public void whenExecuteOnIsInvokedThenAllMetricsAreSaved() {
+
+    DecoratorContext context = mock(DecoratorContext.class);
+
+    decorator.saveMeasures(context);
+
+    int measures = DebtType.values().length + 2;
+
+    verify(context, times(measures)).saveMeasure(any(Measure.class));
+  }
+
+  @Test
+  public void whenShouldExecuteOnProjectIsInvokedAndProjectKeyIsNullThenReturnFalse() {
+    assertFalse(decorator.shouldExecuteOnProject(new Project(null)));
+  }
+
+  @Test
+  public void whenShouldExecuteOnProjectIsInvokedAndProjectKeyIsValidThenReturnTrue() {
+    assertTrue(decorator.shouldExecuteOnProject(new Project("Java")));
+  }
+
+  @Test
+  public void givenPrjectKeyEqualsWithResourceWhenInvokeAllResourcesAreProcessedThenReturnTrue() {
+
+    String key = "Sonar Plugin";
+
+    configureProject(key);
+    Resource<?> resource = configureResource(key);
+
+    assertTrue(decorator.allResourcesAreProcessed(resource));
+  }
+
+  @Test
+  public void givenPrjectKeyNotEqualsWithResourceWhenInvokeAllResourcesAreProcessedThenReturnFalse() {
+
+    configureProject("Project");
+    Resource<?> resource = configureResource("Resource");
+
+    assertFalse(decorator.allResourcesAreProcessed(resource));
+  }
+
+  private void configureProject(String key) {
+
+    Project project = new Project(key);
+    decorator.shouldExecuteOnProject(project);
+  }
+
+  private Resource<?> configureResource(String key) {
+
+    return new Project(key);
+  }
 }

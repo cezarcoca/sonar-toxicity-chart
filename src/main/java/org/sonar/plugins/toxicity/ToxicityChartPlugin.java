@@ -56,7 +56,6 @@ public class ToxicityChartPlugin extends SonarPlugin {
   public List<Class<? extends Extension>> getExtensions() {
     List<Class<? extends Extension>> extensions = new ArrayList<Class<? extends Extension>>();
     extensions.add(ToxicityChartDecorator.class);
-    extensions.add(ToxicityChartAggregator.class);
     extensions.add(ToxicityChartPage.class);
     extensions.add(ToxicityChartMetrics.class);
     extensions.add(ToxicityChart.class);

@@ -66,11 +66,12 @@ final class DebtsFilter {
     if (debtType != null) {
 
       Source source = getSource(violation);
-      Debt debt = getDebtByType(source, debtType);
       BigDecimal cost = ViolationsMapper.getDebtCostProcessor(violation)
           .getCost(violation);
 
+      Debt debt = new Debt(debtType);
       debt.addCost(cost);
+      source.addDebt(debt);
 
       LOGGER.debug("Match found. Debt type is: {} - for: {}.",
           debtType.getKey(), source.getName());
@@ -87,24 +88,6 @@ final class DebtsFilter {
     }
 
     return source;
-  }
-
-  private Debt getDebtByType(Source source, DebtType type) {
-
-    Debt result = null;
-    for (Debt debt : source.getDebts()) {
-      if (debt.getDebtType() == type) {
-        result = debt;
-        break;
-      }
-    }
-
-    if (result == null) {
-      result = new Debt(type);
-      source.addDebt(result);
-    }
-
-    return result;
   }
 
   Toxicity getToxicity() {
