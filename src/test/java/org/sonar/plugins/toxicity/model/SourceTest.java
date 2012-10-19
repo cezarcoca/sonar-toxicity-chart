@@ -20,7 +20,9 @@
 
 package org.sonar.plugins.toxicity.model;
 
-import junit.framework.Assert;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertFalse;
 
 import java.math.BigDecimal;
 
@@ -51,10 +53,10 @@ public class SourceTest {
     two.addDebt(ModelUtil
         .createDebt(BigDecimal.TEN, DebtType.ANON_INNER_LENGTH));
 
-    Assert.assertEquals(1, one.compareTo(null));
-    Assert.assertEquals(1, one.compareTo(two));
-    Assert.assertEquals(-1, two.compareTo(one));
-    Assert.assertEquals(0, one.compareTo(one));
+    assertEquals(1, one.compareTo(null));
+    assertEquals(1, one.compareTo(two));
+    assertEquals(-1, two.compareTo(one));
+    assertEquals(0, one.compareTo(one));
 
   }
 
@@ -69,7 +71,7 @@ public class SourceTest {
     source.addDebt(ModelUtil.createDebt(ANNON_INNER_LENGTH_COST,
         DebtType.ANON_INNER_LENGTH));
 
-    Assert.assertEquals(total, source.getTotal());
+    assertEquals(total, source.getTotal());
   }
 
   @Test(expected = NullPointerException.class)
@@ -89,6 +91,61 @@ public class SourceTest {
 
     BigDecimal sum = BOOLEAN_COMPLEXITY_COST.add(BOOLEAN_COMPLEXITY_COST);
 
-    Assert.assertTrue(source.getDebts().get(0).getCost().compareTo(sum) == 0);
+    assertTrue(source.getDebts().get(0).getCost().compareTo(sum) == 0);
+  }
+
+  @Test
+  public void whenNameIsDifferentThenEqualsReturnFalse() {
+    Source s1 = buildSource("s1", BigDecimal.TEN);
+    Source s2 = buildSource("s2", BigDecimal.TEN);
+
+    assertFalse(s1.equals(s2));
+  }
+
+  @Test
+  public void whenTotalIsDifferentThenEqualsReturnFalse() {
+
+    String name = "source";
+
+    Source s1 = buildSource(name, BigDecimal.ONE);
+    Source s2 = buildSource(name, BigDecimal.TEN);
+
+    assertFalse(s1.equals(s2));
+  }
+
+  @Test
+  public void whenNameAndTotalAreEqualsThenEqualsReturnTrue() {
+
+    String name = "source";
+
+    Source s1 = buildSource(name, BigDecimal.ONE.setScale(1));
+    Source s2 = buildSource(name, BigDecimal.ONE.setScale(2));
+
+    assertTrue(s1.equals(s2));
+  }
+
+  @Test
+  public void whenCompareWithItSelfThenReturnTrue () {
+
+    Source source = new Source("");
+    assertTrue(source.equals(source));
+  }
+
+  @Test
+  public void whenCompareWithNullThenReturnFalse () {
+
+    Source source = new Source("");
+    assertFalse(source.equals(null));
+  }
+
+  private Source buildSource(String name, BigDecimal cost) {
+
+    Source source = new Source(name);
+    Debt debt = new Debt(DebtType.ANON_INNER_LENGTH);
+    debt.addCost(cost);
+
+    source.addDebt(debt);
+
+    return source;
   }
 }

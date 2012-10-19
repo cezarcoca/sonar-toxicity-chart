@@ -141,14 +141,26 @@ public class Source implements ToxicityNode, Comparable<Source> {
 
   private void addOrUpdateDebt(Debt debt) {
 
+    Debt d = getDebtByType(debt.getDebtType());
+
+    if (d == null) {
+      debts.add(debt);
+    } else {
+      d.addCost(debt.getCost());
+    }
+  }
+
+  private Debt getDebtByType(DebtType type) {
+
+    Debt debt = null;
     for (Debt d : debts) {
-      if (d.getDebtType() == debt.getDebtType()) {
-        d.addCost(debt.getCost());
-        return;
+      if (d.getDebtType() == type) {
+        debt = d;
+        break;
       }
     }
 
-    debts.add(debt);;
+    return debt;
   }
 
   public List<Debt> getDebts() {

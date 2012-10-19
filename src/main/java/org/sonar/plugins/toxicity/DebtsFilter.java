@@ -65,12 +65,13 @@ final class DebtsFilter {
     DebtType debtType = ViolationsMapper.getDebtType(violation);
     if (debtType != null) {
 
-      Source source = getSource(violation);
       BigDecimal cost = ViolationsMapper.getDebtCostProcessor(violation)
           .getCost(violation);
 
       Debt debt = new Debt(debtType);
       debt.addCost(cost);
+
+      Source source = getSource(violation);
       source.addDebt(debt);
 
       LOGGER.debug("Match found. Debt type is: {} - for: {}.",
