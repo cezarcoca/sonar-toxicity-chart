@@ -20,6 +20,8 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import org.sonar.plugins.toxicity.model.DebtType;
 
 /**
@@ -49,6 +51,12 @@ public final class DebtProcessor {
 
   public DebtType getType() {
     return type;
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).append("key", key).append("type", type)
+      .append("processor", costProcessor).toString();
   }
 
 }

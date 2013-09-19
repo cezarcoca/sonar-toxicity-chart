@@ -54,6 +54,7 @@ class OneValueCostProcessor extends ViolationMessageCostProcessor {
   private BigDecimal getMaxValue(ActiveRule rule) {
     try {
       for (ActiveRuleParam param : rule.getActiveRuleParams()) {
+        LOGGER.info("Key: {} - Value: {}", param.getKey(), param.getValue());
         if (MAX.equals(param.getKey())) {
           return new BigDecimal(param.getValue());
         }
