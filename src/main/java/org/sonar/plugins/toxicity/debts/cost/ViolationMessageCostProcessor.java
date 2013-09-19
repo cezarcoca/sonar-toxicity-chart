@@ -20,22 +20,30 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import org.junit.Test;
+import org.sonar.api.rules.Violation;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import junit.framework.Assert;
+abstract class ViolationMessageCostProcessor implements DebtCostProcessor {
 
-/**
- * @author ccoca
- *
- */
-public class CheckStyleOneParameterCostProcessorTest {
+  private static final Pattern PATTERN = Pattern.compile("[0-9]{1,3}(,[0-9]{3})*");
+  protected static final int VALUE_INDEX = 0;
 
-    @Test
-    public void whenGetCostIsInvokedThenOneIsReturned() {
+  public List<BigDecimal> parseMessage(Violation violation) {
 
-        Assert.assertEquals(BigDecimal.ONE, new CheckStyleOneParameterCostProcessor().getCost(null));
+    String message = violation.getMessage();
+    Matcher matcher = PATTERN.matcher(message);
+
+    List<BigDecimal> params = new ArrayList<BigDecimal>();
+    while (matcher.find()) {
+      params.add(new BigDecimal(matcher.group().replace(",", "")));
     }
+
+    return params;
+  }
 
 }

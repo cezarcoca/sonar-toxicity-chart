@@ -20,13 +20,35 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import org.sonar.api.rules.Violation;
+import org.sonar.plugins.toxicity.model.DebtType;
 
-import java.math.BigDecimal;
+/**
+ * @author ccoca
+ *
+ */
+public final class DebtProcessor {
 
-public class CheckStyleOneParameterCostProcessor implements DebtCostProcessor {
+  private String key;
+  private DebtCostProcessor costProcessor;
+  private DebtType type;
 
-  public BigDecimal getCost(Violation violation) {
-    return BigDecimal.ONE;
+  DebtProcessor(String key, DebtCostProcessor costProcessor, DebtType type) {
+    super();
+    this.key = key;
+    this.costProcessor = costProcessor;
+    this.type = type;
   }
+
+  public String getKey() {
+    return key;
+  }
+
+  public DebtCostProcessor getCostProcessor() {
+    return costProcessor;
+  }
+
+  public DebtType getType() {
+    return type;
+  }
+
 }

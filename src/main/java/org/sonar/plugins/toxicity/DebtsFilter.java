@@ -20,16 +20,18 @@
 
 package org.sonar.plugins.toxicity;
 
+import org.sonar.plugins.toxicity.debts.cost.DebtProcessor;
+
+import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.rules.Violation;
-import org.sonar.plugins.toxicity.debts.ViolationsMapper;
 import org.sonar.plugins.toxicity.model.Debt;
-import org.sonar.plugins.toxicity.model.DebtType;
 import org.sonar.plugins.toxicity.model.Source;
 import org.sonar.plugins.toxicity.model.Toxicity;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,18 +44,20 @@ import java.util.Map;
  */
 final class DebtsFilter {
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(DebtsFilter.class);
-
   /**
    * Eager initialization.
    */
   private static final DebtsFilter INSTANCE = new DebtsFilter();
 
+  private static final Logger LOGGER = LoggerFactory
+    .getLogger(DebtsFilter.class);
+
   private final Map<String, Source> sources;
+  private DebtProcessorFactory violationsMapper;
 
   private DebtsFilter() {
     super();
+    this.violationsMapper = new DebtProcessorFactory(RulesProfile.create());
     sources = new HashMap<String, Source>();
   }
 
@@ -61,21 +65,23 @@ final class DebtsFilter {
     return INSTANCE;
   }
 
+  public void setRulesProfile(RulesProfile profile) {
+    Preconditions.checkNotNull(profile);
+    this.violationsMapper = new DebtProcessorFactory(profile);
+  }
+
   void filter(Violation violation) {
-    DebtType debtType = ViolationsMapper.getDebtType(violation);
-    if (debtType != null) {
+    DebtProcessor debtProcessor = violationsMapper.getDebtProcessor(violation);
+    if (debtProcessor != null) {
 
-      BigDecimal cost = ViolationsMapper.getDebtCostProcessor(violation)
-          .getCost(violation);
-
-      Debt debt = new Debt(debtType);
-      debt.addCost(cost);
+      Debt debt = new Debt(debtProcessor.getType());
+      debt.addCost(debtProcessor.getCostProcessor().getCost(violation));
 
       Source source = getSource(violation);
       source.addDebt(debt);
 
       LOGGER.debug("Match found. Debt type is: {} - for: {}.",
-          debtType.getKey(), source.getName());
+        debtProcessor.getKey(), source.getName());
     }
   }
 
@@ -102,4 +108,5 @@ final class DebtsFilter {
   void cleanup() {
     sources.clear();
   }
+
 }

@@ -20,15 +20,14 @@
 
 package org.sonar.plugins.toxicity;
 
-import org.junit.After;
+import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
 
 import org.junit.Before;
-
+import org.junit.After;
 import org.junit.Test;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.Violation;
-import org.sonar.plugins.toxicity.debts.ViolationsMapper;
 import org.sonar.plugins.toxicity.model.Source;
 import org.sonar.plugins.toxicity.model.Toxicity;
 
@@ -63,19 +62,17 @@ public final class DebtsFilterTest {
     @Test
     public void whenInvokeFilterThenToxicityShouldBeUpdated() {
 
-        Violation v1 = createViolation(MESSAGE_FILE_LENGTH, ViolationsMapper.FILE_LENGTH_CHECK_STYLE, FIRST);
-        Violation v2 = createViolation("", ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE, FIRST);
-        Violation v3 = createViolation("", ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE, SECOND);
+        Violation v1 = createViolation(MESSAGE_FILE_LENGTH, DebtProcessorFactory.FILE_LENGTH_CHECK_STYLE, FIRST);
+        Violation v2 = createViolation("", DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE, FIRST);
+        Violation v3 = createViolation("", DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE, SECOND);
         Violation v4 = createViolation("", "", THIRD);
 
-        DebtsFilter debtsFilter = DebtsFilter.getInstance();
+        DebtsFilter.getInstance().filter(v1);
+        DebtsFilter.getInstance().filter(v2);
+        DebtsFilter.getInstance().filter(v3);
+        DebtsFilter.getInstance().filter(v4);
 
-        debtsFilter.filter(v1);
-        debtsFilter.filter(v2);
-        debtsFilter.filter(v3);
-        debtsFilter.filter(v4);
-
-        Toxicity toxicity = debtsFilter.getToxicity();
+        Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
 
         assertEquals(2, toxicity.getSources().size());
 

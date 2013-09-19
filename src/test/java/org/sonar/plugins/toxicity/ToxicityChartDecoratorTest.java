@@ -20,22 +20,20 @@
 
 package org.sonar.plugins.toxicity;
 
+import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
+
+import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
-
 import org.junit.After;
-
 import org.junit.Before;
-
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.assertFalse;
-
 import org.junit.Test;
 import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.Violation;
-import org.sonar.plugins.toxicity.debts.ViolationsMapper;
 import org.sonar.plugins.toxicity.model.DebtType;
 
 import java.util.ArrayList;
@@ -57,7 +55,7 @@ public class ToxicityChartDecoratorTest {
 
   @Before
   public void setUp() {
-    decorator = new ToxicityChartDecorator();
+    decorator = new ToxicityChartDecorator(RulesProfile.create());
   }
 
   @After
@@ -77,7 +75,7 @@ public class ToxicityChartDecoratorTest {
     List<Violation> violations = new ArrayList<Violation>();
     for (int i = 0; i < count; i++) {
       violations.add(Violation.create(
-          Rule.create().setKey(ViolationsMapper.MISSING_SWITCH_DEFAULT_CHECK_STYLE), resource));
+          Rule.create().setKey(DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE), resource));
     }
 
     when(context.getViolations()).thenReturn(violations);

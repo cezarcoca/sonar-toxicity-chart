@@ -21,20 +21,18 @@
 package org.sonar.plugins.toxicity;
 
 import com.google.common.annotations.VisibleForTesting;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.sonar.api.measures.Measure;
-import org.sonar.plugins.toxicity.model.DebtType;
-import org.sonar.plugins.toxicity.model.Toxicity;
-import org.sonar.plugins.toxicity.xml.ToxicityXmlBuilder;
-
 import org.sonar.api.batch.Decorator;
 import org.sonar.api.batch.DecoratorContext;
+import org.sonar.api.measures.Measure;
+import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Violation;
+import org.sonar.plugins.toxicity.model.DebtType;
+import org.sonar.plugins.toxicity.model.Toxicity;
+import org.sonar.plugins.toxicity.xml.ToxicityXmlBuilder;
 
 public class ToxicityChartDecorator implements Decorator {
 
@@ -42,6 +40,10 @@ public class ToxicityChartDecorator implements Decorator {
       .getLogger(ToxicityChartDecorator.class);
 
   private String projectKey;
+
+  public ToxicityChartDecorator(RulesProfile profile) {
+    DebtsFilter.getInstance().setRulesProfile(profile);
+  }
 
   public boolean shouldExecuteOnProject(Project project) {
     projectKey = project.getKey();
@@ -81,7 +83,6 @@ public class ToxicityChartDecorator implements Decorator {
     for (DebtType debt : DebtType.values()) {
       context.saveMeasure(new Measure(ToxicityChartMetrics
           .getMetricByDebtType(debt), toxicity.getTotalCostByDebt(debt).doubleValue()));
-
     }
 
     LOGGER.info("Metrics saved successfully.");
