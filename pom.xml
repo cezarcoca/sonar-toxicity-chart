@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.codehaus.sonar-plugins</groupId>
     <artifactId>parent</artifactId>
-    <version>12</version>
+    <version>18</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -37,9 +37,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/trunk/toxicity-chart</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/toxicity-chart</developerConnection>
-    <url>http://svn.sonar-plugins.codehaus.org</url>
+    <connection>scm:git:git@github.com:SonarCommunity/sonar-toxicitychart.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-toxicitychart.git</developerConnection>
+    <url>https://github.com/SonarCommunity/sonar-toxicitychart</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
