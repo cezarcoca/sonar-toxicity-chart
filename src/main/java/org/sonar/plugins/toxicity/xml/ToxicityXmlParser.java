@@ -22,16 +22,13 @@ package org.sonar.plugins.toxicity.xml;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.sonar.plugins.toxicity.model.Toxicity;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -58,7 +55,7 @@ public final class ToxicityXmlParser {
    * @param xml
    * @return
    */
-  public static Toxicity convertXmlToToxicity(@Nullable byte[] xml) {
+  public static Toxicity convertXmlToToxicity(byte[] xml) {
 
     Toxicity toxicity = new Toxicity();
 

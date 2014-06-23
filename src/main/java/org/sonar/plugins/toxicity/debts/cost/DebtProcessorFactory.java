@@ -23,15 +23,10 @@ package org.sonar.plugins.toxicity.debts.cost;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.rules.Violation;
 import org.sonar.plugins.toxicity.model.DebtType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ccoca
@@ -70,17 +65,9 @@ public final class DebtProcessorFactory {
   public static final String MISSING_SWITCH_DEFAULT_SQUID = "SwitchLastCaseIsDefaultCheck";
   public static final String ANON_INNER_LENGTH_SQUID = "S1188";
 
-  /**
-   * Gendarme repository key.
-   */
-  public static final String GENDARME = "gendarme";
-  public static final String AVOID_LONG_METHODS_RULE_GENDARME = "AvoidLongMethodsRule";
-  public static final String AVOID_LONG_PARAMETER_LISTS_RULE_GENDARME = "AvoidLongParameterListsRule";
-  public static final String AVOID_COMPLEX_METHODS_RULE_GENDARME = "AvoidComplexMethodsRule";
-
   private Map<String, DebtProcessor> ruleKeyDebtProcessorMap;
 
-  private void init(RulesProfile profile) {
+  private void init() {
 
     DebtCostProcessor constantCostProcessor = new ConstantCostProcessor();
     DebtCostProcessor twoValuesCostProcessor = new TwoValuesCostProcessor();
@@ -88,7 +75,6 @@ public final class DebtProcessorFactory {
     List<DebtProcessor> debts = new ArrayList<DebtProcessor>();
     registerCheckStyleRules(constantCostProcessor, twoValuesCostProcessor, debts);
     registerSquidRules(constantCostProcessor, twoValuesCostProcessor, debts);
-    registerGendarmeRules(profile, constantCostProcessor, twoValuesCostProcessor, debts);
 
     Map<String, DebtProcessor> map = new HashMap<String, DebtProcessor>();
     for (DebtProcessor debt : debts) {
@@ -97,14 +83,6 @@ public final class DebtProcessorFactory {
     }
 
     ruleKeyDebtProcessorMap = Collections.unmodifiableMap(map);
-  }
-
-  private void registerGendarmeRules(RulesProfile profile, DebtCostProcessor constantCostProcessor, DebtCostProcessor twoValuesCostProcessor, List<DebtProcessor> debts) {
-    debts.add(new DebtProcessor(AVOID_LONG_METHODS_RULE_GENDARME, twoValuesCostProcessor, DebtType.METHOD_LENGTH));
-    debts.add(new DebtProcessor(AVOID_LONG_PARAMETER_LISTS_RULE_GENDARME, constantCostProcessor, DebtType.PARAMETER_NUMBER));
-    debts.add(new DebtProcessor(AVOID_COMPLEX_METHODS_RULE_GENDARME, new OneValueCostProcessor(
-      profile, GENDARME, AVOID_COMPLEX_METHODS_RULE_GENDARME),
-      DebtType.CYCLOMATIC_COMPLEXITY));
   }
 
   private void registerSquidRules(DebtCostProcessor constantCostProcessor, DebtCostProcessor twoValuesCostProcessor, List<DebtProcessor> debts) {
@@ -133,8 +111,8 @@ public final class DebtProcessorFactory {
     debts.add(new DebtProcessor(CYCLOMATIC_COMPLEXITY_CHECK_STYLE, twoValuesCostProcessor, DebtType.CYCLOMATIC_COMPLEXITY));
   }
 
-  public DebtProcessorFactory(RulesProfile profile) {
-    init(profile);
+  public DebtProcessorFactory() {
+    init();
   }
 
   public DebtProcessor getDebtProcessor(Violation violation) {

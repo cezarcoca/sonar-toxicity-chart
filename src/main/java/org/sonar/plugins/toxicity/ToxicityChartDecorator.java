@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Decorator;
 import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.measures.Measure;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Violation;
@@ -40,10 +39,6 @@ public class ToxicityChartDecorator implements Decorator {
       .getLogger(ToxicityChartDecorator.class);
 
   private String projectKey;
-
-  public ToxicityChartDecorator(RulesProfile profile) {
-    DebtsFilter.getInstance().setRulesProfile(profile);
-  }
 
   public boolean shouldExecuteOnProject(Project project) {
     projectKey = project.getKey();

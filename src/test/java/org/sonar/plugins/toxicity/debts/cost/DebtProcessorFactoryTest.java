@@ -20,16 +20,12 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.Violation;
-import org.sonar.plugins.toxicity.debts.cost.ConstantCostProcessor;
-import org.sonar.plugins.toxicity.debts.cost.TwoValuesCostProcessor;
 import org.sonar.plugins.toxicity.model.DebtType;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -42,7 +38,7 @@ public class DebtProcessorFactoryTest {
 
   @Before
   public void setUp() {
-    cut = new DebtProcessorFactory(RulesProfile.create());
+    cut = new DebtProcessorFactory();
   }
 
   @Test

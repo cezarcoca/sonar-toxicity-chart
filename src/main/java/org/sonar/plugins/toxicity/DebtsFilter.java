@@ -20,14 +20,11 @@
 
 package org.sonar.plugins.toxicity;
 
-import org.sonar.plugins.toxicity.debts.cost.DebtProcessor;
-
-import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
-import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.rules.Violation;
+import org.sonar.plugins.toxicity.debts.cost.DebtProcessor;
+import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
 import org.sonar.plugins.toxicity.model.Debt;
 import org.sonar.plugins.toxicity.model.Source;
 import org.sonar.plugins.toxicity.model.Toxicity;
@@ -57,17 +54,12 @@ final class DebtsFilter {
 
   private DebtsFilter() {
     super();
-    this.violationsMapper = new DebtProcessorFactory(RulesProfile.create());
+    this.violationsMapper = new DebtProcessorFactory();
     sources = new HashMap<String, Source>();
   }
 
   static DebtsFilter getInstance() {
     return INSTANCE;
-  }
-
-  public void setRulesProfile(RulesProfile profile) {
-    Preconditions.checkNotNull(profile);
-    this.violationsMapper = new DebtProcessorFactory(profile);
   }
 
   void filter(Violation violation) {

@@ -20,30 +20,25 @@
 
 package org.sonar.plugins.toxicity;
 
-import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
-
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Project;
 import org.junit.After;
 import org.junit.Before;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.assertFalse;
 import org.junit.Test;
 import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.measures.Measure;
+import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.Violation;
+import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
 import org.sonar.plugins.toxicity.model.DebtType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author ccoca
@@ -55,7 +50,7 @@ public class ToxicityChartDecoratorTest {
 
   @Before
   public void setUp() {
-    decorator = new ToxicityChartDecorator(RulesProfile.create());
+    decorator = new ToxicityChartDecorator();
   }
 
   @After
@@ -69,7 +64,7 @@ public class ToxicityChartDecoratorTest {
     int count = 10;
 
     DecoratorContext context = mock(DecoratorContext.class);
-    Resource<?> resource = mock(Resource.class);
+    Resource resource = mock(Resource.class);
     configureProject("Java");
 
     List<Violation> violations = new ArrayList<Violation>();
@@ -114,7 +109,7 @@ public class ToxicityChartDecoratorTest {
     String key = "Sonar Plugin";
 
     configureProject(key);
-    Resource<?> resource = configureResource(key);
+    Resource resource = configureResource(key);
 
     assertTrue(decorator.allResourcesAreProcessed(resource));
   }
@@ -123,7 +118,7 @@ public class ToxicityChartDecoratorTest {
   public void givenPrjectKeyNotEqualsWithResourceWhenInvokeAllResourcesAreProcessedThenReturnFalse() {
 
     configureProject("Project");
-    Resource<?> resource = configureResource("Resource");
+    Resource resource = configureResource("Resource");
 
     assertFalse(decorator.allResourcesAreProcessed(resource));
   }
@@ -134,7 +129,7 @@ public class ToxicityChartDecoratorTest {
     decorator.shouldExecuteOnProject(project);
   }
 
-  private Resource<?> configureResource(String key) {
+  private Resource configureResource(String key) {
 
     return new Project(key);
   }

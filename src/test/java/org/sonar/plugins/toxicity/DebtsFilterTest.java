@@ -90,7 +90,7 @@ public final class DebtsFilterTest {
 
     private Violation createViolation(String message, String ruleKey, String resourceName) {
 
-        Resource<?> resource  = mock(Resource.class);
+        Resource resource  = mock(Resource.class);
         when(resource.getLongName()).thenReturn(resourceName);
 
         Violation violation = Violation.create(Rule.create("", ruleKey, ""), resource);
