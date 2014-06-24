@@ -22,10 +22,12 @@ package org.sonar.plugins.toxicity.debts.cost;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.sonar.api.rules.Rule;
-import org.sonar.api.rules.Violation;
+import org.sonar.api.issue.Issue;
 
 import java.math.BigDecimal;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author ccoca
@@ -42,26 +44,27 @@ public class TwoValuesCostProcessorTest {
 
     Assert.assertTrue(new BigDecimal("1.466667")
       .compareTo(new TwoValuesCostProcessor()
-        .getCost(createViolation(MESSAGE_TWO_NUMERIC_VALUE))) == 0);
+        .getCost(createIssue(MESSAGE_TWO_NUMERIC_VALUE))) == 0);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void whenMessageWithNoNumericValueIsReceivedThenIllegalArgumentExceptionIsThrown() {
 
     new TwoValuesCostProcessor()
-      .getCost(createViolation(MESSAGE_NO_NUMERIC_VALUE));
+      .getCost(createIssue(MESSAGE_NO_NUMERIC_VALUE));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void whenMessageWithOneNumericValueIsReceivedThenIllegalArgumentExceptionIsThrown() {
 
     new TwoValuesCostProcessor()
-      .getCost(createViolation(MESSAGE_ONE_NUMERIC_VALUE));
+      .getCost(createIssue(MESSAGE_ONE_NUMERIC_VALUE));
   }
 
-  private Violation createViolation(String message) {
-    Violation violation = Violation.create(Rule.create(), null);
-    violation.setMessage(message);
-    return violation;
+  private Issue createIssue(String message) {
+
+    Issue issue = mock(Issue.class);
+    when(issue.message()).thenReturn(message);
+    return issue;
   }
 }

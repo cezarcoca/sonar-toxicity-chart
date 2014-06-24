@@ -22,11 +22,13 @@ package org.sonar.plugins.toxicity.debts.cost;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.rules.Rule;
-import org.sonar.api.rules.Violation;
+import org.sonar.api.issue.Issue;
+import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.toxicity.model.DebtType;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author ccoca
@@ -42,23 +44,23 @@ public class DebtProcessorFactoryTest {
   }
 
   @Test
-  public void givenMatchingViolationWhengetDebtProcessorIsInvokedThenCorrectDebtTypeIsReturned() {
+  public void givenMatchingViolationWhenGetDebtProcessorIsInvokedThenCorrectDebtTypeIsReturned() {
 
-    assertEquals(DebtType.ANON_INNER_LENGTH, cut.getDebtProcessor(createViolation(DebtProcessorFactory.ANON_INNER_LENGTH_CHECK_STYLE)).getType());
-    assertEquals(DebtType.FILE_LENGTH, cut.getDebtProcessor(createViolation(DebtProcessorFactory.FILE_LENGTH_CHECK_STYLE)).getType());
-    assertEquals(DebtType.METHOD_LENGTH, cut.getDebtProcessor(createViolation(DebtProcessorFactory.METHOD_LENGTH_CHECK_STYLE)).getType());
-    assertEquals(DebtType.PARAMETER_NUMBER, cut.getDebtProcessor(createViolation(DebtProcessorFactory.PARAMETER_NUMBER_CHECK_STYLE)).getType());
-    assertEquals(DebtType.MISSING_SWITCH_DEFAULT, cut.getDebtProcessor(createViolation(DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE)).getType());
-    assertEquals(DebtType.NESTED_IF_DEPTH, cut.getDebtProcessor(createViolation(DebtProcessorFactory.NESTED_IF_DEPTH_CHECK_STYLE)).getType());
-    assertEquals(DebtType.NESTED_TRY_DEPTH, cut.getDebtProcessor(createViolation(DebtProcessorFactory.NESTED_TRY_DEPTH_CHECK_STYLE)).getType());
-    assertEquals(DebtType.BOOLEAN_EXPRESSION_COMPLEXITY, cut.getDebtProcessor(createViolation(DebtProcessorFactory.BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE)).getType());
-    assertEquals(DebtType.CLASS_DATA_ABSTRACTION_COUPLING, cut.getDebtProcessor(createViolation(DebtProcessorFactory.CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE)).getType());
-    assertEquals(DebtType.CLASS_FAN_OUT_COMPLEXITY, cut.getDebtProcessor(createViolation(DebtProcessorFactory.CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE)).getType());
-    assertEquals(DebtType.CYCLOMATIC_COMPLEXITY, cut.getDebtProcessor(createViolation(DebtProcessorFactory.CYCLOMATIC_COMPLEXITY_CHECK_STYLE)).getType());
+    assertEquals(DebtType.ANON_INNER_LENGTH, cut.getDebtProcessor(createIssue(DebtProcessorFactory.ANON_INNER_LENGTH_CHECK_STYLE)).getType());
+    assertEquals(DebtType.FILE_LENGTH, cut.getDebtProcessor(createIssue(DebtProcessorFactory.FILE_LENGTH_CHECK_STYLE)).getType());
+    assertEquals(DebtType.METHOD_LENGTH, cut.getDebtProcessor(createIssue(DebtProcessorFactory.METHOD_LENGTH_CHECK_STYLE)).getType());
+    assertEquals(DebtType.PARAMETER_NUMBER, cut.getDebtProcessor(createIssue(DebtProcessorFactory.PARAMETER_NUMBER_CHECK_STYLE)).getType());
+    assertEquals(DebtType.MISSING_SWITCH_DEFAULT, cut.getDebtProcessor(createIssue(DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE)).getType());
+    assertEquals(DebtType.NESTED_IF_DEPTH, cut.getDebtProcessor(createIssue(DebtProcessorFactory.NESTED_IF_DEPTH_CHECK_STYLE)).getType());
+    assertEquals(DebtType.NESTED_TRY_DEPTH, cut.getDebtProcessor(createIssue(DebtProcessorFactory.NESTED_TRY_DEPTH_CHECK_STYLE)).getType());
+    assertEquals(DebtType.BOOLEAN_EXPRESSION_COMPLEXITY, cut.getDebtProcessor(createIssue(DebtProcessorFactory.BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE)).getType());
+    assertEquals(DebtType.CLASS_DATA_ABSTRACTION_COUPLING, cut.getDebtProcessor(createIssue(DebtProcessorFactory.CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE)).getType());
+    assertEquals(DebtType.CLASS_FAN_OUT_COMPLEXITY, cut.getDebtProcessor(createIssue(DebtProcessorFactory.CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE)).getType());
+    assertEquals(DebtType.CYCLOMATIC_COMPLEXITY, cut.getDebtProcessor(createIssue(DebtProcessorFactory.CYCLOMATIC_COMPLEXITY_CHECK_STYLE)).getType());
   }
 
   @Test(expected = NullPointerException.class)
-  public void givenNullViolationWhengetDebtProcessorIsInvokedThenNullPointerExceptionShouldBeThrown() {
+  public void givenNullViolationWhenGetDebtProcessorIsInvokedThenNullPointerExceptionShouldBeThrown() {
 
     cut.getDebtProcessor(null);
   }
@@ -69,21 +71,23 @@ public class DebtProcessorFactoryTest {
     Class<?> one = new ConstantCostProcessor().getClass();
     Class<?> two = new TwoValuesCostProcessor().getClass();
 
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.ANON_INNER_LENGTH_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.FILE_LENGTH_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.METHOD_LENGTH_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(one, cut.getDebtProcessor(createViolation(DebtProcessorFactory.PARAMETER_NUMBER_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(one, cut.getDebtProcessor(createViolation(DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(one, cut.getDebtProcessor(createViolation(DebtProcessorFactory.NESTED_IF_DEPTH_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(one, cut.getDebtProcessor(createViolation(DebtProcessorFactory.NESTED_TRY_DEPTH_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.CYCLOMATIC_COMPLEXITY_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(two, cut.getDebtProcessor(createIssue(DebtProcessorFactory.ANON_INNER_LENGTH_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(two, cut.getDebtProcessor(createIssue(DebtProcessorFactory.FILE_LENGTH_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(two, cut.getDebtProcessor(createIssue(DebtProcessorFactory.METHOD_LENGTH_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(one, cut.getDebtProcessor(createIssue(DebtProcessorFactory.PARAMETER_NUMBER_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(one, cut.getDebtProcessor(createIssue(DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(one, cut.getDebtProcessor(createIssue(DebtProcessorFactory.NESTED_IF_DEPTH_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(one, cut.getDebtProcessor(createIssue(DebtProcessorFactory.NESTED_TRY_DEPTH_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(two, cut.getDebtProcessor(createIssue(DebtProcessorFactory.BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(two, cut.getDebtProcessor(createIssue(DebtProcessorFactory.CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(two, cut.getDebtProcessor(createIssue(DebtProcessorFactory.CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(two, cut.getDebtProcessor(createIssue(DebtProcessorFactory.CYCLOMATIC_COMPLEXITY_CHECK_STYLE)).getCostProcessor().getClass());
   }
 
-  private Violation createViolation(String key) {
+  private Issue createIssue(String key) {
 
-    return Violation.create(Rule.create("", key, ""), null);
+    Issue issue = mock(Issue.class, key);
+    when(issue.ruleKey()).thenReturn(RuleKey.of("repository", key));
+    return issue;
   }
 }

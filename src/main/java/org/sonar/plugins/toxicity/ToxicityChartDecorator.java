@@ -33,10 +33,11 @@ import org.sonar.api.issue.Issue;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
-import org.sonar.api.rules.Violation;
 import org.sonar.plugins.toxicity.model.DebtType;
 import org.sonar.plugins.toxicity.model.Toxicity;
 import org.sonar.plugins.toxicity.xml.ToxicityXmlBuilder;
+
+import java.io.UnsupportedEncodingException;
 
 @DependsUpon(DecoratorBarriers.ISSUES_TRACKED)
 public class ToxicityChartDecorator implements Decorator {
@@ -56,12 +57,15 @@ public class ToxicityChartDecorator implements Decorator {
     return projectKey != null;
   }
 
+  @Override
   public void decorate(@SuppressWarnings("rawtypes") Resource resource,
       DecoratorContext context) {
 
-    out(resource);
-    for (Violation violation : context.getViolations()) {
-      DebtsFilter.getInstance().filter(violation);
+    Issuable issuable = perspectives.as(Issuable.class, resource);
+    if(issuable != null) {
+      for (Issue issue : issuable.issues()) {
+        DebtsFilter.getInstance().filter(issue);
+      }
     }
 
     if (allResourcesAreProcessed(resource)) {
@@ -83,7 +87,7 @@ public class ToxicityChartDecorator implements Decorator {
     Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
 
     context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_STATUS,
-        new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity))));
+        getToxicityAsXml(toxicity)));
     context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE,
             toxicity.getAverageCost()));
 
@@ -95,14 +99,12 @@ public class ToxicityChartDecorator implements Decorator {
     LOGGER.info("Metrics saved successfully.");
   }
 
-  private void out(Resource resource) {
-    Issuable issuable = perspectives.as(Issuable.class, resource);
-    System.out.println("## Resource: " + resource.getName() + " - issuable: " + issuable);
-    if(issuable != null) {
-      for (Issue issue : issuable.issues()) {
-        System.out.println(issue.componentKey());
-        System.out.println(issue.ruleKey().toString() + " - message: " + issue.message() + " - cost: " + issue.effortToFix());
-      }
+  private String getToxicityAsXml(Toxicity toxicity) {
+    try {
+      return new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      LOGGER.error(e.getMessage(), e);
     }
+    return "";
   }
 }

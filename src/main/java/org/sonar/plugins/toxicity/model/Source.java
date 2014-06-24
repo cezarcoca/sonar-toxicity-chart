@@ -51,6 +51,7 @@ public class Source implements ToxicityNode, Comparable<Source> {
 
   private static final String NAME_ATTR = "name";
   private static final String TOTAL_ATTR = "total";
+  private static final String DEBTS_ATTR = "debts";
   public static final String NODE_NAME = "source";
 
   private List<Debt> debts;
@@ -165,8 +166,8 @@ public class Source implements ToxicityNode, Comparable<Source> {
   @Override
   public String toString() {
 
-    return new ToStringBuilder(this).append("total", getTotal())
-        .append(NAME_ATTR, name).append("debts", debts).toString();
+    return new ToStringBuilder(this).append(TOTAL_ATTR, getTotal())
+        .append(NAME_ATTR, name).append(DEBTS_ATTR, debts).toString();
   }
 
   @Override

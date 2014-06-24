@@ -158,6 +158,7 @@ public class ToxicityChart extends AbstractChart {
       value = new BigDecimal(threshold);
     } catch (NumberFormatException e) {
       value = new BigDecimal(ToxicityChartPlugin.TC_THRESHOLD_DEFAULT);
+      LOGGER.debug("Failed to convert threshold to valid number.", e);
     }
 
     LOGGER.info("Threshold set for Toxicity Chart is: {}",

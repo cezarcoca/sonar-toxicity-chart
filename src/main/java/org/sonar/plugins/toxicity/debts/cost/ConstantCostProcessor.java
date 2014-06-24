@@ -20,13 +20,13 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import org.sonar.api.rules.Violation;
+import org.sonar.api.issue.Issue;
 
 import java.math.BigDecimal;
 
 class ConstantCostProcessor implements DebtCostProcessor {
 
-  public BigDecimal getCost(Violation violation) {
+  public BigDecimal getCost(Issue issue) {
     return BigDecimal.ONE;
   }
 }

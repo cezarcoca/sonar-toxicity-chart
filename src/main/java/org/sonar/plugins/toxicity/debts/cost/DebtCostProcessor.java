@@ -20,11 +20,11 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import org.sonar.api.rules.Violation;
+import org.sonar.api.issue.Issue;
 
 import java.math.BigDecimal;
 
 public interface DebtCostProcessor {
 
-  BigDecimal getCost(Violation violation);
+  BigDecimal getCost(Issue issue);
 }

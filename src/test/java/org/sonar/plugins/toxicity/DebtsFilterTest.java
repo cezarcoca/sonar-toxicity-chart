@@ -20,14 +20,12 @@
 
 package org.sonar.plugins.toxicity;
 
-import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
-
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.resources.Resource;
-import org.sonar.api.rules.Rule;
-import org.sonar.api.rules.Violation;
+import org.sonar.api.issue.Issue;
+import org.sonar.api.rule.RuleKey;
+import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
 import org.sonar.plugins.toxicity.model.Source;
 import org.sonar.plugins.toxicity.model.Toxicity;
 
@@ -40,62 +38,59 @@ import static org.mockito.Mockito.when;
 
 /**
  * @author ccoca
- *
  */
 public final class DebtsFilterTest {
 
-    private static final String SECOND = "second";
-    private static final String FIRST = "first";
-    private static final String THIRD = "third";
-    private static final String MESSAGE_FILE_LENGTH = "Method length is 270 lines (max allowed is 30).";
+  private static final String SECOND = "second";
+  private static final String FIRST = "first";
+  private static final String THIRD = "third";
+  private static final String MESSAGE_FILE_LENGTH = "Method length is 270 lines (max allowed is 30).";
 
-    @Before
-    public void setUp() {
-        DebtsFilter.getInstance().cleanup();
-    }
+  @Before
+  public void setUp() {
+    DebtsFilter.getInstance().cleanup();
+  }
 
-    @After
-    public void tearDown() {
-        DebtsFilter.getInstance().cleanup();
-    }
+  @After
+  public void tearDown() {
+    DebtsFilter.getInstance().cleanup();
+  }
 
-    @Test
-    public void whenInvokeFilterThenToxicityShouldBeUpdated() {
+  @Test
+  public void whenInvokeFilterThenToxicityShouldBeUpdated() {
 
-        Violation v1 = createViolation(MESSAGE_FILE_LENGTH, DebtProcessorFactory.FILE_LENGTH_CHECK_STYLE, FIRST);
-        Violation v2 = createViolation("", DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE, FIRST);
-        Violation v3 = createViolation("", DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE, SECOND);
-        Violation v4 = createViolation("", "", THIRD);
+    Issue v1 = createIssue(MESSAGE_FILE_LENGTH, DebtProcessorFactory.FILE_LENGTH_CHECK_STYLE, FIRST);
+    Issue v2 = createIssue("", DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE, FIRST);
+    Issue v3 = createIssue("", DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE, SECOND);
+    Issue v4 = createIssue("", "Other", THIRD);
 
-        DebtsFilter.getInstance().filter(v1);
-        DebtsFilter.getInstance().filter(v2);
-        DebtsFilter.getInstance().filter(v3);
-        DebtsFilter.getInstance().filter(v4);
+    DebtsFilter.getInstance().filter(v1);
+    DebtsFilter.getInstance().filter(v2);
+    DebtsFilter.getInstance().filter(v3);
+    DebtsFilter.getInstance().filter(v4);
 
-        Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
+    Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
 
-        assertEquals(2, toxicity.getSources().size());
+    assertEquals(2, toxicity.getSources().size());
 
-        Source first = toxicity.getSources().get(0);
+    Source first = toxicity.getSources().get(0);
 
-        assertEquals(FIRST, first.getName());
-        assertEquals(2, first.getDebts().size());
-        assertTrue(BigDecimal.TEN.compareTo(first.getTotal()) == 0);
+    assertEquals(FIRST, first.getName());
+    assertEquals(2, first.getDebts().size());
+    assertTrue(BigDecimal.TEN.compareTo(first.getTotal()) == 0);
 
-        Source second = toxicity.getSources().get(1);
-        assertEquals(SECOND, second.getName());
-        assertEquals(1, second.getDebts().size());
-        assertTrue(BigDecimal.ONE.compareTo(second.getTotal()) == 0);
-    }
+    Source second = toxicity.getSources().get(1);
+    assertEquals(SECOND, second.getName());
+    assertEquals(1, second.getDebts().size());
+    assertTrue(BigDecimal.ONE.compareTo(second.getTotal()) == 0);
+  }
 
-    private Violation createViolation(String message, String ruleKey, String resourceName) {
+  private Issue createIssue(String message, String ruleKey, String resourceName) {
 
-        Resource resource  = mock(Resource.class);
-        when(resource.getLongName()).thenReturn(resourceName);
-
-        Violation violation = Violation.create(Rule.create("", ruleKey, ""), resource);
-        violation.setMessage(message);
-
-        return violation;
-    }
+    Issue issue = mock(Issue.class, ruleKey);
+    when(issue.ruleKey()).thenReturn(RuleKey.of("repository", ruleKey));
+    when(issue.componentKey()).thenReturn(resourceName);
+    when(issue.message()).thenReturn(message);
+    return issue;
+  }
 }

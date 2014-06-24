@@ -23,7 +23,7 @@ package org.sonar.plugins.toxicity.debts.cost;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.rules.Violation;
+import org.sonar.api.issue.Issue;
 import org.sonar.plugins.toxicity.model.DebtType;
 
 import java.util.*;
@@ -83,7 +83,7 @@ public final class DebtProcessorFactory {
     Map<String, DebtProcessor> map = new HashMap<String, DebtProcessor>();
     for (DebtProcessor debt : debts) {
       map.put(debt.getKey(), debt);
-      LOGGER.info("DebtProcessor successfully registered: {}", debt);
+      LOGGER.debug("DebtProcessor successfully registered: {}", debt);
     }
 
     ruleKeyDebtProcessorMap = Collections.unmodifiableMap(map);
@@ -119,11 +119,11 @@ public final class DebtProcessorFactory {
     init();
   }
 
-  public DebtProcessor getDebtProcessor(Violation violation) {
+  public DebtProcessor getDebtProcessor(Issue issue) {
 
-    Preconditions.checkNotNull(violation);
+    Preconditions.checkNotNull(issue);
 
-    return ruleKeyDebtProcessorMap.get(violation.getRule().getKey());
+    return ruleKeyDebtProcessorMap.get(issue.ruleKey().rule());
   }
 
 }

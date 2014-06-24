@@ -25,11 +25,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.issue.Issuable;
+import org.sonar.api.issue.Issue;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
-import org.sonar.api.rules.Rule;
-import org.sonar.api.rules.Violation;
+import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
 import org.sonar.plugins.toxicity.model.DebtType;
 
@@ -70,18 +71,17 @@ public class ToxicityChartDecoratorTest {
     Resource resource = mock(Resource.class);
     configureProject("Java");
 
-    List<Violation> violations = new ArrayList<Violation>();
+    List<Issue> issues = new ArrayList<Issue>();
     for (int i = 0; i < count; i++) {
-      violations.add(Violation.create(
-          Rule.create().setKey(DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE), resource));
+      issues.add(createIssue("", DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE, ""));
     }
 
-    when(context.getViolations()).thenReturn(violations);
-    when(resource.getLongName()).thenReturn("org.sonar.plugins.toxicity");
+    Issuable issuable = mock(Issuable.class);
+    when(issuable.issues()).thenReturn(issues);
+
+    when(perspectivesMock.as(Issuable.class, resource)).thenReturn(issuable);
 
     decorator.decorate(resource, context);
-
-    verify(resource, times(count)).getLongName();
   }
 
   @Test
@@ -107,7 +107,7 @@ public class ToxicityChartDecoratorTest {
   }
 
   @Test
-  public void givenPrjectKeyEqualsWithResourceWhenInvokeAllResourcesAreProcessedThenReturnTrue() {
+  public void givenProjectKeyEqualsWithResourceWhenInvokeAllResourcesAreProcessedThenReturnTrue() {
 
     String key = "Sonar Plugin";
 
@@ -118,7 +118,7 @@ public class ToxicityChartDecoratorTest {
   }
 
   @Test
-  public void givenPrjectKeyNotEqualsWithResourceWhenInvokeAllResourcesAreProcessedThenReturnFalse() {
+  public void givenProjectKeyNotEqualsWithResourceWhenInvokeAllResourcesAreProcessedThenReturnFalse() {
 
     configureProject("Project");
     Resource resource = configureResource("Resource");
@@ -135,5 +135,13 @@ public class ToxicityChartDecoratorTest {
   private Resource configureResource(String key) {
 
     return new Project(key);
+  }
+
+  private Issue createIssue(String message, String ruleKey, String resourceName) {
+
+    Issue issue = mock(Issue.class, ruleKey);
+    when(issue.ruleKey()).thenReturn(RuleKey.of("repository", ruleKey));
+    when(issue.componentKey()).thenReturn(resourceName);
+    return issue;
   }
 }

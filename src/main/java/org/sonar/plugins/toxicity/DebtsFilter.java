@@ -22,7 +22,7 @@ package org.sonar.plugins.toxicity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.rules.Violation;
+import org.sonar.api.issue.Issue;
 import org.sonar.plugins.toxicity.debts.cost.DebtProcessor;
 import org.sonar.plugins.toxicity.debts.cost.DebtProcessorFactory;
 import org.sonar.plugins.toxicity.model.Debt;
@@ -50,11 +50,11 @@ final class DebtsFilter {
     .getLogger(DebtsFilter.class);
 
   private final Map<String, Source> sources;
-  private DebtProcessorFactory violationsMapper;
+  private DebtProcessorFactory issuesMapper;
 
   private DebtsFilter() {
     super();
-    this.violationsMapper = new DebtProcessorFactory();
+    this.issuesMapper = new DebtProcessorFactory();
     sources = new HashMap<String, Source>();
   }
 
@@ -62,14 +62,14 @@ final class DebtsFilter {
     return INSTANCE;
   }
 
-  void filter(Violation violation) {
-    DebtProcessor debtProcessor = violationsMapper.getDebtProcessor(violation);
+  void filter(Issue issue) {
+    DebtProcessor debtProcessor = issuesMapper.getDebtProcessor(issue);
     if (debtProcessor != null) {
 
       Debt debt = new Debt(debtProcessor.getType());
-      debt.addCost(debtProcessor.getCostProcessor().getCost(violation));
+      debt.addCost(debtProcessor.getCostProcessor().getCost(issue));
 
-      Source source = getSource(violation);
+      Source source = getSource(issue);
       source.addDebt(debt);
 
       LOGGER.debug("Match found. Debt type is: {} - for: {}.",
@@ -77,9 +77,9 @@ final class DebtsFilter {
     }
   }
 
-  private Source getSource(Violation violation) {
+  private Source getSource(Issue issue) {
 
-    String name = violation.getResource().getLongName();
+    String name = issue.componentKey();
     Source source = sources.get(name);
     if (source == null) {
       source = new Source(name);

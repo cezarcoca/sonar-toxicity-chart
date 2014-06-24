@@ -20,25 +20,43 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import org.sonar.api.rules.Violation;
+import org.sonar.api.issue.Issue;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-class TwoValuesCostProcessor extends ViolationMessageCostProcessor {
+class TwoValuesCostProcessor implements DebtCostProcessor {
 
+  private static final Pattern PATTERN = Pattern.compile("[0-9]{1,3}(,[0-9]{3})*");
+  private static final int VALUE_INDEX = 0;
   private static final int REQUIRED_VALUE_INDEX = 1;
 
-  public BigDecimal getCost(Violation violation) {
+  public BigDecimal getCost(Issue issue) {
 
-    List<BigDecimal> params = parseMessage(violation);
+    List<BigDecimal> params = parseMessage(issue);
     if (params.size() < 2) {
       throw new IllegalArgumentException("Invalid message "
-        + violation.getMessage() + ". Two integral parameters was expected");
+        + issue.message() + ". Two integral parameters was expected");
     }
 
     return params.get(VALUE_INDEX).divide(params.get(REQUIRED_VALUE_INDEX),
       MathContext.DECIMAL32);
+  }
+
+  private List<BigDecimal> parseMessage(Issue issue) {
+
+    String message = issue.message();
+    Matcher matcher = PATTERN.matcher(message);
+
+    List<BigDecimal> params = new ArrayList<BigDecimal>();
+    while (matcher.find()) {
+      params.add(new BigDecimal(matcher.group().replace(",", "")));
+    }
+
+    return params;
   }
 }
