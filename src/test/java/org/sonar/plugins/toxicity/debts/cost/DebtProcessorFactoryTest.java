@@ -74,8 +74,8 @@ public class DebtProcessorFactoryTest {
     assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.METHOD_LENGTH_CHECK_STYLE)).getCostProcessor().getClass());
     assertEquals(one, cut.getDebtProcessor(createViolation(DebtProcessorFactory.PARAMETER_NUMBER_CHECK_STYLE)).getCostProcessor().getClass());
     assertEquals(one, cut.getDebtProcessor(createViolation(DebtProcessorFactory.MISSING_SWITCH_DEFAULT_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.NESTED_IF_DEPTH_CHECK_STYLE)).getCostProcessor().getClass());
-    assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.NESTED_TRY_DEPTH_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(one, cut.getDebtProcessor(createViolation(DebtProcessorFactory.NESTED_IF_DEPTH_CHECK_STYLE)).getCostProcessor().getClass());
+    assertEquals(one, cut.getDebtProcessor(createViolation(DebtProcessorFactory.NESTED_TRY_DEPTH_CHECK_STYLE)).getCostProcessor().getClass());
     assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.BOOLEAN_EXPRESSION_COMPLEXITY_CHECK_STYLE)).getCostProcessor().getClass());
     assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE)).getCostProcessor().getClass());
     assertEquals(two, cut.getDebtProcessor(createViolation(DebtProcessorFactory.CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE)).getCostProcessor().getClass());

@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.DecoratorContext;
+import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
@@ -47,10 +48,12 @@ import static org.mockito.Mockito.*;
 public class ToxicityChartDecoratorTest {
 
   private ToxicityChartDecorator decorator;
+  private ResourcePerspectives perspectivesMock;
 
   @Before
   public void setUp() {
-    decorator = new ToxicityChartDecorator();
+    perspectivesMock = mock(ResourcePerspectives.class);
+    decorator = new ToxicityChartDecorator(perspectivesMock);
   }
 
   @After
