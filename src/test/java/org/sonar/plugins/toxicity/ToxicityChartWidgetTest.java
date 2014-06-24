@@ -29,19 +29,19 @@ import static org.junit.Assert.assertNotNull;
  * @author ccoca
  *
  */
-public class ToxicityChartPageTest {
+public class ToxicityChartWidgetTest {
 
     @Test
     public void checkTemplateIsInClasspath() {
 
-        String path = new ToxicityChartPage().getTemplatePath();
+        String path = new ToxicityChartWidget().getTemplatePath();
         assertNotNull(getClass().getResource(path));
     }
 
     @Test
     public void checkPageTitleAndId() {
 
-        assertEquals(ToxicityChartPlugin.PLUGIN_NAME, new ToxicityChartPage().getTitle());
-        assertEquals(ToxicityChartPlugin.PLUGIN_KEY, new ToxicityChartPage().getId());
+        assertEquals(ToxicityChartPlugin.PLUGIN_NAME, new ToxicityChartWidget().getTitle());
+        assertEquals(ToxicityChartPlugin.PLUGIN_KEY, new ToxicityChartWidget().getId());
     }
 }

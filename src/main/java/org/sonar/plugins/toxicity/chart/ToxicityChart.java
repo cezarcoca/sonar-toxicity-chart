@@ -60,7 +60,7 @@ public class ToxicityChart extends AbstractChart {
       .getLogger(ToxicityChart.class);
 
   static final String KEY = "toxicitychart";
-  private static final int DEFAULT_WIDTH = 1024;
+  private static final int DEFAULT_WIDTH = 850;
   private static final int DEFAULT_HEIGHT = 576;
   private static final Float X_AXIS_FONT_SIZE = Float.valueOf("7");
 

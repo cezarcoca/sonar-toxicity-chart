@@ -20,14 +20,12 @@
 
 package org.sonar.plugins.toxicity;
 
-import org.sonar.api.web.NavigationSection;
-
 import org.sonar.api.web.AbstractRubyTemplate;
-import org.sonar.api.web.RubyRailsPage;
+import org.sonar.api.web.RubyRailsWidget;
+import org.sonar.api.web.WidgetCategory;
 
-@NavigationSection({ NavigationSection.RESOURCE })
-public class ToxicityChartPage extends AbstractRubyTemplate implements
-    RubyRailsPage {
+@WidgetCategory("Technical Debt")
+public class ToxicityChartWidget extends AbstractRubyTemplate implements RubyRailsWidget  {
 
   /**
    * @return the page id
