@@ -68,6 +68,7 @@ public final class DebtProcessorFactory {
   public static final String NESTED_TRY_DEPTH_SQUID = "S1141";
   public static final String MISSING_SWITCH_DEFAULT_SQUID = "SwitchLastCaseIsDefaultCheck";
   public static final String ANON_INNER_LENGTH_SQUID = "S1188";
+  public static final String CLASS_FAN_OUT_COMPLEXITY_SQUID = "S1200";
 
   private Map<String, DebtProcessor> ruleKeyDebtProcessorMap;
 
@@ -103,6 +104,7 @@ public final class DebtProcessorFactory {
     debts.add(new DebtProcessor(NESTED_TRY_DEPTH_SQUID, constantCostProcessor, DebtType.NESTED_TRY_DEPTH));
     debts.add(new DebtProcessor(MISSING_SWITCH_DEFAULT_SQUID, constantCostProcessor, DebtType.MISSING_SWITCH_DEFAULT));
     debts.add(new DebtProcessor(ANON_INNER_LENGTH_SQUID, twoValuesCostProcessor, DebtType.ANON_INNER_LENGTH));
+    debts.add(new DebtProcessor(CLASS_FAN_OUT_COMPLEXITY_SQUID, twoValuesCostProcessor, DebtType.CLASS_FAN_OUT_COMPLEXITY));
   }
 
   private void registerCheckStyleRules(DebtCostProcessor constantCostProcessor, DebtCostProcessor twoValuesCostProcessor, List<DebtProcessor> debts) {
