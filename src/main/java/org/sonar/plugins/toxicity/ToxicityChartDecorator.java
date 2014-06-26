@@ -42,7 +42,7 @@ import java.io.UnsupportedEncodingException;
 @DependsUpon(DecoratorBarriers.ISSUES_TRACKED)
 public class ToxicityChartDecorator implements Decorator {
 
-  protected static final Logger LOGGER = LoggerFactory
+  private static final Logger LOGGER = LoggerFactory
       .getLogger(ToxicityChartDecorator.class);
 
   private String projectKey;

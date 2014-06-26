@@ -28,6 +28,7 @@ import org.sonar.plugins.toxicity.model.DebtType;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The metrics definition for the plugin
@@ -36,6 +37,9 @@ import java.util.List;
  *
  */
 public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
+
+  private static final Map<DebtType, Metric> METRICS = new EnumMap<DebtType, Metric>(
+      DebtType.class);
 
   /**
    * The Toxicity Chart metric
@@ -189,9 +193,6 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
         TOXICITY_NESTED_IF_DEPTH_VALUE, TOXICITY_NESTED_TRY_DEPTH_VALUE,
         TOXICITY_PARAMETER_NUMBER_VALUE);
   }
-
-  private static final EnumMap<DebtType, Metric> METRICS = new EnumMap<DebtType, Metric>(
-      DebtType.class);
 
   static {
 

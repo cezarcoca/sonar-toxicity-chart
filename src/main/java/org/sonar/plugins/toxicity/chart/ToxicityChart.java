@@ -87,7 +87,7 @@ public class ToxicityChart extends AbstractChart {
     MeasureData data = dao.getMeasureDataById(params.getValue(MEASURE_ID));
     Toxicity toxicity = ToxicityXmlParser.convertXmlToToxicity(data != null ? data.getData() : null);
 
-    LinkedHashSet<String> seriesOrderedByFirstUse = new LinkedHashSet<String>();
+    Set<String> seriesOrderedByFirstUse = new LinkedHashSet<String>();
     CategoryDataset dataset = createDataset(toxicity, seriesOrderedByFirstUse);
 
     JFreeChart chart = getChart(dataset);
@@ -143,9 +143,8 @@ public class ToxicityChart extends AbstractChart {
   }
 
   private JFreeChart createChart(final CategoryDataset dataset) {
-    final JFreeChart chart = ChartFactory.createStackedBarChart("", "", "",
+    return ChartFactory.createStackedBarChart("", "", "",
         dataset, PlotOrientation.VERTICAL, true, true, false);
-    return chart;
   }
 
   @VisibleForTesting

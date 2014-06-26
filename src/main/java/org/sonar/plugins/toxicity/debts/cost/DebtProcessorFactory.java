@@ -71,6 +71,10 @@ public final class DebtProcessorFactory {
 
   private Map<String, DebtProcessor> ruleKeyDebtProcessorMap;
 
+  public DebtProcessorFactory() {
+    init();
+  }
+
   private void init() {
 
     DebtCostProcessor constantCostProcessor = new ConstantCostProcessor();
@@ -113,10 +117,6 @@ public final class DebtProcessorFactory {
     debts.add(new DebtProcessor(CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE, twoValuesCostProcessor, DebtType.CLASS_DATA_ABSTRACTION_COUPLING));
     debts.add(new DebtProcessor(CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE, twoValuesCostProcessor, DebtType.CLASS_FAN_OUT_COMPLEXITY));
     debts.add(new DebtProcessor(CYCLOMATIC_COMPLEXITY_CHECK_STYLE, twoValuesCostProcessor, DebtType.CYCLOMATIC_COMPLEXITY));
-  }
-
-  public DebtProcessorFactory() {
-    init();
   }
 
   public DebtProcessor getDebtProcessor(Issue issue) {

@@ -36,7 +36,7 @@ import java.util.List;
   name = "Toxicity Chart threshold", description = "Toxicity Chart threshold.") })
 public class ToxicityChartPlugin extends SonarPlugin {
 
-  protected static final Logger LOGGER = LoggerFactory
+  private static final Logger LOGGER = LoggerFactory
       .getLogger(ToxicityChartPlugin.class);
 
   public static final String PLUGIN_NAME = "Toxicity Chart";
