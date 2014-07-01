@@ -21,122 +21,15 @@
 </script>
 <style>
   .rectangle{width:10px;height:10px;border:1px solid #DDD;float:left;margin-top:2px;margin-left:5px;margin-right:5px}
+  .legend{width:100%}
 </style>
-<div style="margin:0 auto;width:850px;display:block">
+<div style="margin:0 auto;width:100%;display:block;">
   <div class="dashbox">
   <div>
-    <%=chart('ck=toxicitychart&w=850&h=576&v=' + measure_ref.id.to_s) %>
-  </div>
-  <div id="dashboard">
-    <div class="widget">
-      <table widith="100%">
-        <tr>
-          <td width="25%">
-            <div class="rectangle" style="background-color:#FFFFFF" ></div>
-            <div style="float:left">
-              <div>Average value</div>
-              <span class="big"><%= measure('toxicity_chart_average').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td width="25%">
-            <div class="rectangle" style="background-color:#4198AF" ></div>
-            <div style="float:left">
-              <div>File length</div>
-              <span class="big"><%= measure('toxicity_chart_file_length').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td width="25%">
-            <div class="rectangle" style="background-color:#DB843D" ></div>
-            <div style="float:left">
-              <div>Method length</div>
-              <span class="big"><%= measure('toxicity_chart_method_length').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td width="25%">
-            <div class="rectangle" style="background-color:#71588F" ></div>
-            <div style="float:left">
-              <div>Cyclomatic complexity</div>
-              <span class="big"><%= measure('toxicity_chart_cyclomatic_complexity').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="rectangle" style="background-color:#9999FF" ></div>
-            <div style="float:left">
-              <div>Boolean expression complexity</div>
-              <span class="big"><%= measure('toxicity_chart_boolean_expression_complexity').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td>
-            <div class="rectangle" style="background-color:#B9CD96" ></div>
-            <div style="float:left">
-              <div>Parameter number</div>
-              <span class="big"><%= measure('toxicity_chart_parameter_number').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td>
-            <div class="rectangle" style="background-color:#AA4643" ></div>
-            <div style="float:left">
-              <div>Class data abstraction coupling</div>
-              <span class="big"><%= measure('toxicity_chart_class_data_abstraction_coupling').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td>
-            <div class="rectangle" style="background-color:#89A54E" ></div>
-            <div style="float:left">
-              <div>Class fan out complexity</div>
-              <span class="big"><%= measure('toxicity_chart_class_fan_out_complexity').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="rectangle" style="background-color:#93A9CF" ></div>
-            <div style="float:left">
-              <div>Nested if depth</div>
-              <span class="big"><%= measure('toxicity_chart_nested_if_depth').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td>
-            <div class="rectangle" style="background-color:#BB9C68" ></div>
-            <div style="float:left">
-              <div>Nested try depth</div>
-              <span class="big"><%= measure('toxicity_chart_nested_try_depth').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td>
-            <div class="rectangle" style="background-color:#A99BBD" ></div>
-            <div style="float:left">
-              <div>Missing switch default</div>
-              <span class="big"><%= measure('toxicity_chart_missing_switch_default').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-          <td>
-            <div class="rectangle" style="background-color:#D19392" ></div>
-            <div style="float:left">
-              <div>Anon inner length</div>
-              <span class="big"><%= measure('toxicity_chart_anon_inner_length').value.to_f%></span>
-            </div>
-            <div style="clear" ></div>
-          </td>
-        </tr>
-      </table>
-    </div>
+    <%=chart('ck=toxicitychart&w=550&h=410&v=' + measure_ref.id.to_s) %>
   </div>
 
-  <table class="data" summary="Toxicty Chart Legend">
+  <table class="data legend" summary="Toxicty Chart Legend">
     <thead>
       <tr>
         <th>No</th>
@@ -161,7 +54,7 @@
           <%= index %>
         </td>
         <td>
-          <a id="sourceName" href="javascript:toggle(<%= index %>);"><%= source.attributes["name"] %></a>
+          <a id="sourceName" href="javascript:toggle(<%= index %>);"><%= source.attributes["name"].partition(':').last %></a>
           <div id=<%= debtsName %> style="display: none">
               <% source.elements.each("debt") { |debt| %>
                 <div>
