@@ -6,90 +6,247 @@
     measure_ref = measure('toxicity_chart_status')
     threshold = BigDecimal.new(configuration('threshold', "1"))
 %>
-<script language="javascript">
-  function toggle(index) {
-    var name = document.getElementById("toggleName_" + index);
-    var cost = document.getElementById("toggleCost_" + index);
-    if(name.style.display == "block") {
-      name.style.display = "none";
-      cost.style.display = "none";
-    } else {
-      name.style.display = "block";
-      cost.style.display = "block";
-    }
-  }
-</script>
 <style>
-  .rectangle{width:10px;height:10px;border:1px solid #DDD;float:left;margin-top:2px;margin-left:5px;margin-right:5px}
-  .legend{width:100%;height:250px;overflow-x:auto;overflow-y:scroll}
-</style>
-<div style="margin:0 auto;width:100%;display:block;">
-  <div class="dashbox">
-  <div>
-    <%=chart('ck=toxicitychart&w=550&h=410&v=' + measure_ref.id.to_s) %>
-  </div>
 
-  <div class="legend">
-  <table class="data" summary="Toxicty Chart Legend">
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>Name</th>
-        <th>Cost</th>
-      </tr>
-    </thead>
-    <tbody>
-      <%
-        doc = REXML::Document.new(measure_ref.data.to_s);
-        index = 1;
-        doc.elements.each("toxicity/source") { |source|
-        if BigDecimal.new(source.attributes["total"]) < threshold then
-          break
-        end
-        rowClass = ((index % 2) == 0) ? "even" : "odd";
-        debtsName = "toggleName_" + index.to_s
-        debtsCost = "toggleCost_" + index.to_s
-      %>
-      <tr class=<%=rowClass %>>
-        <td>
-          <%= index %>
-        </td>
-        <td>
-          <a id="sourceName" href="javascript:toggle(<%= index %>);"><%= source.attributes["name"].split(':').last %></a>
-          <div id=<%= debtsName %> style="display: none">
-              <% source.elements.each("debt") { |debt| %>
-                <div>
-                  <div class="rectangle" style='background-color:<%= debt.attributes["color"] %>'></div>
-                  <div style="float:left">
-                    <%= debt.attributes["key"] %>
-                  </div>
-                </div>
-                <div class="clear" ></div>
-              <% } %>
-          </div>
-        </td>
-        <td>
-          <b><%= source.attributes["total"] %></b>
-          <div id=<%= debtsCost %> style="display: none">
-            <ul>
-              <% source.elements.each("debt") { |debt| %>
-                <div>
-                  <%= debt.attributes["cost"] %>
-                </div>
-              <% } %>
-            </ul>
-          </div>
-        </td>
-      </tr>
-      <%
-        index += 1
-        }
-      %>
-    </tbody>
-  </table>
-  </div>
- </div>
-</div>
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.vlines, .hlines{
+	stroke:rgb(150,148,109);
+	shape-rendering:crispEdges;
+	stroke-width:1px;
+	stroke-opacity:0.3;
+}
+
+rect {
+  shape-rendering: crispEdges;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: left;
+  padding: 4px;
+  font: 12px sans-serif;
+  background: #FFF;
+  border: 1px solid #333;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.tooltip h2 {
+	font-family: sans-serif;
+	font-size: 130%;
+	margin: 0 0 0 0;
+}
+
+.tooltip p.path {
+	font-size: 90%;
+	margin: 0.2em 0 0.7em 0;
+	border-bottom: 1px solid #BBB;
+}
+
+.tooltip p {
+	line-height: 1.1em;
+	margin: 0 1px 3px 1px;
+}
+
+.tooltip-swatch {
+	padding-right: 5px;
+	margin: 0 2px 1px 0;
+	border: 1px solid;
+	color: #EEE;
+}
+
+.tooltip .total {
+	font-weight: bold;
+}
+</style>
+    </head>
+    <body>
+    </body>
+	<div id="toxicity_chart"></div>
+<script language="javascript">
+  (function () {
+
+    var xmlData = <%= measure_ref.data.to_s -%>;
+
+	toxicity = {}
+
+	toxicity.checknames = [
+		"Boolean expression complexity",
+		"Class data abstraction coupling",
+		"Class fan out complexity",
+		"Cyclomatic complexity",
+		"File length",
+		"Method length",
+		"Nested if depth",
+		"Anon inner length",
+		"Parameter number",
+		"Missing switch default",
+		"Nested try depth"
+	];
+
+	toxicity.colors = [
+		"#989BFA",
+		"#9C4B45",
+		"#8EA252",
+		"#6D5A8D",
+		"#5396AC",
+		"#CE8743",
+		"#96A9CD",
+		"#C79593",
+		"#BCCA98",
+		"#E9C197",
+		"#BB9C68"
+	];
+
+	toxicity.parse = function(xmlData) {
+		var xml = $.parseXML(xmlData)
+		var nodes = $(xml).find("source");
+		return $.map(nodes, toxicity.parseNode);
+	}
+
+	toxicity.parseNode = function(fnode, fidx) {
+		var path = $(fnode).attr("name").replace(/\\/g, "/");
+		var total = $(fnode).attr("total");
+		var flawedClass = {
+			name: path.split("/").slice(-1)[0],
+			path: path,
+			total: total
+		};
+		$(fnode).children().each(function(eidx, enode) {
+			var key = $(enode).attr("key");
+			var cost = $(enode).attr("cost");
+			flawedClass[key] = parseFloat(cost);
+		});
+		return flawedClass;
+	}
+
+	toxicity.tooltip = function(a) {
+		var accessor = arguments.length ? a : undefined;
+		function tooltip(selection) {
+			selection
+				.on("mouseover", function(d) {
+					if (accessor) {
+						d = accessor(d);
+					}
+					var div = d3.select("#toxicity_chart").selectAll("div.tooltip");
+					if (div.empty()) {
+						div = d3.select("#toxicity_chart").append("div").attr("class", "tooltip").style("opacity", 0);
+					}
+					div.html("");
+					div.append("h2").text(d.name);
+					div.append("p").attr("class", "path").text(d.path.split("/").slice(0, -1).join("/"));
+					$(toxicity.checknames.slice(0).reverse()).each(function(i, c) {
+						if(d[c] > 0) {
+							var color = toxicity.colors[toxicity.colors.length - i - 1];
+							var p = div.append("p");
+							p.append("span")
+								.attr("class", "tooltip-swatch")
+								.style("color", d3.rgb(color).darker())
+								.style("background-color", color);
+							p.append("span")
+								.text(c + ": " + d[c]);
+						}
+					});
+					var p = div.append("p");
+					p.append("span")
+						.attr("class", "tooltip-swatch");
+					p.append("span")
+						.attr("class", "total")
+						.text("Total: " + d.total);
+					var ttx = d3.event.pageX;
+					var tty = d3.event.pageY - $("div.tooltip").height() - 15;
+					var hclip = (ttx + $("div.tooltip").width() + 20) - ($(window).width() + $(window).scrollLeft())
+					if (hclip > 0) {
+						ttx -= hclip
+					}
+					div.style("left", Math.max(ttx + 4, $(window).scrollLeft() + 5) + "px")
+					 .style("top", Math.max(tty, $(window).scrollTop() + 5) + "px");
+					div.transition().duration(100).style("opacity", 0.95);
+				})
+				.on("mouseout", function(d) {
+					div = d3.select("body").select("div.tooltip")
+					div.transition().duration(250).style("opacity", 0);
+				});
+		};
+		return tooltip;
+	}
+
+	var classes = toxicity.parse(xmlData);
+
+	var CHEIGHT = 425;
+	var BWIDTH = 6;
+	var BGAP = 2;
+	var LEFTSPACE = 25;
+
+	var checks = d3.layout.stack()(toxicity.checknames.map(function(key) {
+		return classes.map(function(d, i) {
+			return { x: i, y: d[key] || 0, flaws: d };
+		});
+	}));
+
+	d3.selectAll("svg").remove();
+	var chart = d3.select("#toxicity_chart").append("svg")
+		.attr("class", "chart")
+		.attr("width", LEFTSPACE + (BWIDTH + BGAP) * classes.length + 10)
+		.attr("height", CHEIGHT + 5);
+
+	var xscale = d3.scale.linear()
+		.domain([0, classes.length])
+		.rangeRound([LEFTSPACE, (BWIDTH + BGAP) * classes.length + LEFTSPACE])
+
+	var yscale = d3.scale.linear()
+		.domain([0, Math.round(classes[0].total/10) * 10 + 1])
+		.rangeRound([CHEIGHT, 1]);
+
+	var yaxis = d3.svg.axis()
+		.scale(yscale)
+		.orient("left")
+		.ticks(10);
+
+	var fscale = d3.scale.ordinal().range(toxicity.colors);
+
+	chart.selectAll(".line")
+		.data(yscale.ticks(10))
+		.enter().append("line")
+		.attr("class","vlines")
+		.attr("x1", function(td) { return xscale(0) })
+		.attr("x2", function(td) { return xscale(classes.length) })
+		.attr("y1", yscale)
+		.attr("y2", yscale);
+
+	var groups = chart.selectAll("g.checks")
+		.data(checks)
+		.enter().append("g")
+		.attr("class", "check")
+		.style("fill", function(d, i) { return fscale(i); })
+		.style("stroke", function(d, i) { return d3.rgb(fscale(i)).darker(); });
+
+	groups.selectAll("rect")
+		.data(Object)
+		.enter().append("rect")
+		.attr("x", function(d) { return xscale(d.x); })
+		.attr("y", function(d) { return yscale(d.y + d.y0); })
+		.attr("height", function(d) { return CHEIGHT - yscale(d.y); })
+		.attr("width", function(d) { return BWIDTH; })
+		.call(toxicity.tooltip(function(d) { return d.flaws; }));
+
+	chart.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(" + LEFTSPACE + ", 0)")
+		.call(yaxis);
+
+  })();
+</script>
 <%
   end
 %>

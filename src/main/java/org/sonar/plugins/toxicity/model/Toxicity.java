@@ -21,7 +21,6 @@
 package org.sonar.plugins.toxicity.model;
 
 import com.google.common.base.Preconditions;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -168,7 +167,8 @@ public class Toxicity implements ToxicityNode {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append("units", sources).toString();
+    return "Toxicity{" +
+        "sources=" + sources +
+        '}';
   }
-
 }

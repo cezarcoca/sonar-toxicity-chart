@@ -21,18 +21,11 @@
 package org.sonar.plugins.toxicity.model;
 
 import com.google.common.base.Objects;
-
-import org.w3c.dom.Element;
-
-import org.w3c.dom.Document;
-
 import com.google.common.base.Preconditions;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-
-import org.w3c.dom.NodeList;
-
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -165,9 +158,11 @@ public class Source implements ToxicityNode, Comparable<Source> {
 
   @Override
   public String toString() {
-
-    return new ToStringBuilder(this).append(TOTAL_ATTR, getTotal())
-        .append(NAME_ATTR, name).append(DEBTS_ATTR, debts).toString();
+    return "Source{" +
+        "debts=" + debts +
+        ", name='" + name + '\'' +
+        ", total=" + total +
+        '}';
   }
 
   @Override

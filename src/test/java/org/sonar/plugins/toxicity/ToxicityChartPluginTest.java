@@ -34,6 +34,6 @@ public class ToxicityChartPluginTest {
     @Test
     public void whenCallGetExtensionsThenExpectedClassAreReturned() {
 
-        assertThat(new ToxicityChartPlugin().getExtensions().size(), is(4));
+        assertThat(new ToxicityChartPlugin().getExtensions().size(), is(3));
     }
 }

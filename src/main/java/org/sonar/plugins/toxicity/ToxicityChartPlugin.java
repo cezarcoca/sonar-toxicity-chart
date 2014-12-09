@@ -20,14 +20,12 @@
 
 package org.sonar.plugins.toxicity;
 
-import org.sonar.api.SonarPlugin;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.Extension;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
-import org.sonar.plugins.toxicity.chart.ToxicityChart;
+import org.sonar.api.SonarPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +56,6 @@ public class ToxicityChartPlugin extends SonarPlugin {
     extensions.add(ToxicityChartDecorator.class);
     extensions.add(ToxicityChartWidget.class);
     extensions.add(ToxicityChartMetrics.class);
-    extensions.add(ToxicityChart.class);
     return extensions;
   }
 }

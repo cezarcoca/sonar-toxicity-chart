@@ -26,7 +26,6 @@ import org.w3c.dom.Document;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.w3c.dom.Node;
 
 import java.math.BigDecimal;
@@ -153,8 +152,9 @@ public class Debt implements ToxicityNode, Comparable<Debt> {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append(KEY_ATTR, debtType)
-        .append(COST_ATTR, cost).toString();
+    return "Debt{" +
+        "cost=" + cost +
+        ", debtType=" + debtType +
+        '}';
   }
-
 }

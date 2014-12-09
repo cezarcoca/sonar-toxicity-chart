@@ -46,7 +46,7 @@
   </issueManagement>
 
   <properties>
-    <sonar.version>4.3</sonar.version>
+    <sonar.version>4.5.1</sonar.version>
     <sonar.pluginName>Toxicity Chart</sonar.pluginName>
     <sonar.pluginClass>org.sonar.plugins.toxicity.ToxicityChartPlugin</sonar.pluginClass>
   </properties>
