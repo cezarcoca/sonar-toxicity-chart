@@ -31,6 +31,4 @@ public interface ToxicityNode {
 
   Node convertToXml(Document xml);
 
-  void readFromXml(Node node);
-
 }

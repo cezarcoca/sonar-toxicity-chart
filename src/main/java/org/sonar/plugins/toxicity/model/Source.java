@@ -44,7 +44,6 @@ public class Source implements ToxicityNode, Comparable<Source> {
 
   private static final String NAME_ATTR = "name";
   private static final String TOTAL_ATTR = "total";
-  private static final String DEBTS_ATTR = "debts";
   public static final String NODE_NAME = "source";
 
   private List<Debt> debts;
@@ -84,32 +83,6 @@ public class Source implements ToxicityNode, Comparable<Source> {
     }
 
     return node;
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see
-   * org.sonar.plugins.toxicity.model.ToxicityNode#readFromXml(org.w3c.dom.Node)
-   */
-  public void readFromXml(Node node) {
-
-    Preconditions.checkNotNull(node);
-
-    name = node.getAttributes().getNamedItem(NAME_ATTR).getNodeValue();
-
-    debts.clear();
-    total = BigDecimal.ZERO;
-
-    NodeList nodes = node.getChildNodes();
-    for (int i = 0; i < nodes.getLength(); i++) {
-      Node n = nodes.item(i);
-      if (Debt.NODE_NAME.equals(n.getNodeName())) {
-        Debt debt = new Debt();
-        debt.readFromXml(n);
-        addDebt(debt);
-      }
-    }
   }
 
   /*

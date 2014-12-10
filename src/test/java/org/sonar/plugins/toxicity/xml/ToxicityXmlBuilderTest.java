@@ -25,59 +25,67 @@ import org.sonar.plugins.toxicity.model.DebtType;
 import org.sonar.plugins.toxicity.model.ModelUtil;
 import org.sonar.plugins.toxicity.model.Source;
 import org.sonar.plugins.toxicity.model.Toxicity;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-
 /**
  * @author ccoca
- *
  */
 public class ToxicityXmlBuilderTest {
 
-    private static final String SOURCE_1 = Toxicity.class.getName();
-    private static final String SOURCE_2 = Source.class.getName();
+  private static final String SOURCE_1 = Toxicity.class.getName();
+  private static final String SOURCE_2 = Source.class.getName();
 
-    private static final BigDecimal CYCLOMATIC_COMPLEXITY_COST = new BigDecimal("10.25");
-    private static final BigDecimal METHOD_LENGTH_COST = new BigDecimal("89.75");
+  private static final BigDecimal CYCLOMATIC_COMPLEXITY_COST = new BigDecimal("10.25");
+  private static final BigDecimal METHOD_LENGTH_COST = new BigDecimal("89.75");
 
-    @Test
-    public void whenCallConvertToxicityToXmlThenWellFormedXmlIsCreated() {
+  @Test
+  public void whenCallConvertToxicityToXmlThenWellFormedXmlIsCreated() {
 
-        Toxicity expected = new Toxicity();
+    Toxicity expected = new Toxicity();
 
-        Source smallTotal = new Source(SOURCE_1);
-        smallTotal.addDebt(ModelUtil.createDebt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
+    Source smallTotal = new Source(SOURCE_1);
+    smallTotal.addDebt(ModelUtil.createDebt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
 
-        Source largeTotal = new Source(SOURCE_2);
-        largeTotal.addDebt(ModelUtil.createDebt(METHOD_LENGTH_COST, DebtType.METHOD_LENGTH));
-        largeTotal.addDebt(ModelUtil.createDebt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
+    Source largeTotal = new Source(SOURCE_2);
+    largeTotal.addDebt(ModelUtil.createDebt(METHOD_LENGTH_COST, DebtType.METHOD_LENGTH));
+    largeTotal.addDebt(ModelUtil.createDebt(CYCLOMATIC_COMPLEXITY_COST, DebtType.CYCLOMATIC_COMPLEXITY));
 
-        Collection<Source> sources = new ArrayList<Source>();
-        sources.add(smallTotal);
-        sources.add(largeTotal);
-        expected.setSources(sources);
+    Collection<Source> sources = new ArrayList<Source>();
+    sources.add(smallTotal);
+    sources.add(largeTotal);
+    expected.setSources(sources);
 
-        byte[] xml = ToxicityXmlBuilder.convertToxicityToXml(expected);
-        Toxicity generated = ToxicityXmlParser.convertXmlToToxicity(xml);
+    byte[] xml = ToxicityXmlBuilder.convertToxicityToXml(expected);
+    validateXml(xml);
+  }
 
-        assertEquals(expected.getSources().size(), generated.getSources().size());
+  private void validateXml(byte[] xml) {
 
-        checkExpectations(largeTotal, generated.getSources().get(0));
-        checkExpectations(smallTotal, generated.getSources().get(1));
+    try {
 
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(new ByteArrayInputStream(xml));
+
+      doc.getDocumentElement().normalize();
+
+    } catch (ParserConfigurationException e) {
+      throw new IllegalStateException(e);
+    } catch (SAXException e) {
+      throw new IllegalStateException(e);
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
     }
-
-    private void checkExpectations(Source expected, Source actual) {
-        assertEquals(expected.getName(), actual.getName());
-        assertTrue(expected.getTotal().compareTo(actual.getTotal()) == 0);
-        for(int i = 0; i < expected.getDebts().size(); i++) {
-            assertEquals(expected.getDebts().get(i), expected.getDebts().get(i));
-        }
-    }
+  }
 
 }

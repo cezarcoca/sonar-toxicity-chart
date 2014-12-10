@@ -1,10 +1,10 @@
 <%
-  require 'rexml/rexml'
-  require 'rexml/document'
   if !@snapshot.nil? && @snapshot.measure('toxicity_chart_status')
     metric_ref = metric('toxicity_chart_status')
     measure_ref = measure('toxicity_chart_status')
     threshold = BigDecimal.new(configuration('threshold', "1"))
+    xml_data_obj = measure_ref.data.to_s
+    puts xml_data_obj
 %>
 <style>
 
@@ -19,7 +19,7 @@
   shape-rendering: crispEdges;
 }
 
-.vlines, .hlines{
+.vlines {
 	stroke:rgb(150,148,109);
 	shape-rendering:crispEdges;
 	stroke-width:1px;
@@ -69,14 +69,22 @@ div.tooltip {
 	font-weight: bold;
 }
 </style>
-    </head>
-    <body>
-    </body>
-	<div id="toxicity_chart"></div>
+<div class="widget-row">
+ <div class="widget-span widget-span-6">
+  <div class="widget-measure-container">
+   <div class="widget-measure widget-measure-main">
+    <span class="widget-label">Toxicity Chart</span>
+    <span id="no_debts">No debts</span>
+    <span class="nowrap">
+   </div>
+  </div>
+ </div>
+</div>
+<div id="toxicity_chart_area" style="text-align:center;margin-top: 10px""></div>
 <script language="javascript">
-  (function () {
+(function () {
 
-    var xmlData = <%= measure_ref.data.to_s -%>;
+  var xmlData = '<%= xml_data_obj %>';
 
 	toxicity = {}
 
@@ -97,8 +105,8 @@ div.tooltip {
 	toxicity.colors = [
 		"#989BFA",
 		"#9C4B45",
-		"#8EA252",
 		"#6D5A8D",
+		"#8EA252",
 		"#5396AC",
 		"#CE8743",
 		"#96A9CD",
@@ -109,22 +117,26 @@ div.tooltip {
 	];
 
 	toxicity.parse = function(xmlData) {
-		var xml = $.parseXML(xmlData)
-		var nodes = $(xml).find("source");
-		return $.map(nodes, toxicity.parseNode);
+		var xml = $j.parseXML(xmlData)
+		var nodes = $j(xml).find("source");
+		return $j.map(nodes, toxicity.parseNode);
 	}
 
+  var limit = <%= threshold %>;
 	toxicity.parseNode = function(fnode, fidx) {
-		var path = $(fnode).attr("name").replace(/\\/g, "/");
-		var total = $(fnode).attr("total");
+		var total = parseFloat($j(fnode).attr("total"));
+		if(total < limit) {
+     return;
+    }
+    var path = $j(fnode).attr("name").replace(/\\/g, "/");
 		var flawedClass = {
 			name: path.split("/").slice(-1)[0],
 			path: path,
 			total: total
 		};
-		$(fnode).children().each(function(eidx, enode) {
-			var key = $(enode).attr("key");
-			var cost = $(enode).attr("cost");
+		$j(fnode).children().each(function(eidx, enode) {
+			var key = $j(enode).attr("key");
+			var cost = $j(enode).attr("cost");
 			flawedClass[key] = parseFloat(cost);
 		});
 		return flawedClass;
@@ -138,14 +150,14 @@ div.tooltip {
 					if (accessor) {
 						d = accessor(d);
 					}
-					var div = d3.select("#toxicity_chart").selectAll("div.tooltip");
+					var div = d3.select("#toxicity_chart_area").selectAll("div.tooltip");
 					if (div.empty()) {
-						div = d3.select("#toxicity_chart").append("div").attr("class", "tooltip").style("opacity", 0);
+						div = d3.select("#toxicity_chart_area").append("div").attr("class", "tooltip").style("opacity", 0);
 					}
 					div.html("");
 					div.append("h2").text(d.name);
 					div.append("p").attr("class", "path").text(d.path.split("/").slice(0, -1).join("/"));
-					$(toxicity.checknames.slice(0).reverse()).each(function(i, c) {
+					$j(toxicity.checknames.slice(0).reverse()).each(function(i, c) {
 						if(d[c] > 0) {
 							var color = toxicity.colors[toxicity.colors.length - i - 1];
 							var p = div.append("p");
@@ -158,19 +170,10 @@ div.tooltip {
 						}
 					});
 					var p = div.append("p");
-					p.append("span")
-						.attr("class", "tooltip-swatch");
-					p.append("span")
-						.attr("class", "total")
-						.text("Total: " + d.total);
-					var ttx = d3.event.pageX;
-					var tty = d3.event.pageY - $("div.tooltip").height() - 15;
-					var hclip = (ttx + $("div.tooltip").width() + 20) - ($(window).width() + $(window).scrollLeft())
-					if (hclip > 0) {
-						ttx -= hclip
-					}
-					div.style("left", Math.max(ttx + 4, $(window).scrollLeft() + 5) + "px")
-					 .style("top", Math.max(tty, $(window).scrollTop() + 5) + "px");
+					p.append("span").attr("class", "tooltip-swatch");
+					p.append("span").attr("class", "total").text("Total: " + d.total);
+					var ttx = $j("#toxicity_chart").scrollLeft() + 10;
+					div.style("right", ttx + "px").style("top", "10px");
 					div.transition().duration(100).style("opacity", 0.95);
 				})
 				.on("mouseout", function(d) {
@@ -182,9 +185,14 @@ div.tooltip {
 	}
 
 	var classes = toxicity.parse(xmlData);
+	if(classes.length == 0) {
+	  return;
+	} else {
+	  $j("#no_debts").hide();
+	}
 
-	var CHEIGHT = 425;
-	var BWIDTH = 6;
+	var CHEIGHT = 320;
+	var BWIDTH = Math.max(400 / classes.length, 2);
 	var BGAP = 2;
 	var LEFTSPACE = 25;
 
@@ -195,7 +203,7 @@ div.tooltip {
 	}));
 
 	d3.selectAll("svg").remove();
-	var chart = d3.select("#toxicity_chart").append("svg")
+	var chart = d3.select("#toxicity_chart_area").append("svg")
 		.attr("class", "chart")
 		.attr("width", LEFTSPACE + (BWIDTH + BGAP) * classes.length + 10)
 		.attr("height", CHEIGHT + 5);

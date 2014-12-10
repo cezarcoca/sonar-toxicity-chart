@@ -66,30 +66,6 @@ public class Toxicity implements ToxicityNode {
     return node;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see org.sonar.plugins.toxicity.model.Node#readFromXml()
-   */
-  public void readFromXml(Node node) {
-
-    Preconditions.checkNotNull(node);
-
-    sources.clear();
-
-    NodeList nodes = node.getChildNodes();
-    for (int i = 0; i < nodes.getLength(); i++) {
-      Node n = nodes.item(i);
-      if (Source.NODE_NAME.equals(n.getNodeName())) {
-        Source source = new Source();
-        source.readFromXml(n);
-        sources.add(source);
-      }
-    }
-
-    Collections.sort(sources);
-  }
-
   public void setSources(Collection<Source> sources) {
 
     Preconditions.checkNotNull(sources);

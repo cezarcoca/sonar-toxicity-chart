@@ -21,6 +21,7 @@
 package org.sonar.plugins.toxicity.model;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -60,5 +61,17 @@ public class DebtTypeTest {
     assertEquals("#D19392", DebtType.ANON_INNER_LENGTH.getColorHexCode());
     assertEquals("#D19392", DebtType.ANON_INNER_LENGTH.getColorHexCode());
     assertEquals("#A99BBD", DebtType.MISSING_SWITCH_DEFAULT.getColorHexCode());
+  }
+
+  @Test
+  public void whenInvokeGetDebtTypeByKeyWithInvalidKeyThenNullIsReturned() {
+    DebtType actual = DebtType.getDebtTypeByKey("invalid");
+    assertNull(actual);
+  }
+
+  @Test
+  public void whenInvokeGetDebtTypeByKeyWithValidKeyThenRightTypeIsReturned() {
+    DebtType actual = DebtType.getDebtTypeByKey(DebtType.METHOD_LENGTH.getKey());
+    assertEquals(DebtType.METHOD_LENGTH, actual);
   }
 }

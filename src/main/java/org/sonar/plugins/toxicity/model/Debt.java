@@ -80,22 +80,6 @@ public class Debt implements ToxicityNode, Comparable<Debt> {
     return node;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see org.sonar.plugins.toxicity.model.ToxicityNode#readFromXml(org.w3c.dom
-   * .Node)
-   */
-  public void readFromXml(Node node) {
-
-    Preconditions.checkNotNull(node);
-
-    String key = node.getAttributes().getNamedItem(KEY_ATTR).getNodeValue();
-    debtType = DebtType.getDebtTypeByKey(key);
-    cost = normalize(new BigDecimal(node.getAttributes()
-        .getNamedItem(COST_ATTR).getNodeValue()));
-  }
-
   public BigDecimal getCost() {
     return cost;
   }
