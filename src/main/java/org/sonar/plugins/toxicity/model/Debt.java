@@ -68,6 +68,7 @@ public class Debt implements ToxicityNode, Comparable<Debt> {
    *
    * @see org.sonar.plugins.toxicity.model.Node#convertToXml()
    */
+  @Override
   public Node convertToXml(Document xml) {
 
     Preconditions.checkNotNull(xml);

@@ -182,6 +182,7 @@ public class ToxicityChartMetrics implements org.sonar.api.measures.Metrics {
   /**
    * @return the declare metrics
    */
+  @Override
   public List<Metric> getMetrics() {
     return Arrays.asList(TOXICITY_STATUS, TOXICITY_AVERAGE_VALUE,
         TOXICITY_ANON_INNER_LENGTH_VALUE,

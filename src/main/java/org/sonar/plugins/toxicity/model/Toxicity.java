@@ -54,6 +54,7 @@ public class Toxicity implements ToxicityNode {
    *
    * @see org.sonar.plugins.toxicity.model.Node#convertToXml()
    */
+  @Override
   public Node convertToXml(Document xml) {
 
     Preconditions.checkNotNull(xml);

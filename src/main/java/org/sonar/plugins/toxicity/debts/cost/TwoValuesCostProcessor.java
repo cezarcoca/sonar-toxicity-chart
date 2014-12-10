@@ -35,6 +35,7 @@ class TwoValuesCostProcessor implements DebtCostProcessor {
   private static final int VALUE_INDEX = 0;
   private static final int REQUIRED_VALUE_INDEX = 1;
 
+  @Override
   public BigDecimal getCost(Issue issue) {
 
     List<BigDecimal> params = parseMessage(issue);

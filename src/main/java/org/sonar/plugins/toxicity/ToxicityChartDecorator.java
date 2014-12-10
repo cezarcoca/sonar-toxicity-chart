@@ -52,6 +52,7 @@ public class ToxicityChartDecorator implements Decorator {
     this.perspectives = perspectives;
   }
 
+  @Override
   public boolean shouldExecuteOnProject(Project project) {
     projectKey = project.getKey();
     return projectKey != null;

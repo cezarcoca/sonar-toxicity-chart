@@ -30,6 +30,7 @@ public class ToxicityChartWidget extends AbstractRubyTemplate implements RubyRai
   /**
    * @return the page id
    */
+  @Override
   public String getId() {
     return ToxicityChartPlugin.PLUGIN_KEY;
   }
@@ -37,6 +38,7 @@ public class ToxicityChartWidget extends AbstractRubyTemplate implements RubyRai
   /**
    * @return the page title
    */
+  @Override
   public String getTitle() {
     return ToxicityChartPlugin.PLUGIN_NAME;
   }

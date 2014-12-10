@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 
 class ConstantCostProcessor implements DebtCostProcessor {
 
+  @Override
   public BigDecimal getCost(Issue issue) {
     return BigDecimal.ONE;
   }

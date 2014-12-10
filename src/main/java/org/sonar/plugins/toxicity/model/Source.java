@@ -69,6 +69,7 @@ public class Source implements ToxicityNode, Comparable<Source> {
    *
    * @see org.sonar.plugins.toxicity.model.Node#convertToXml()
    */
+  @Override
   public Node convertToXml(Document xml) {
 
     Preconditions.checkNotNull(xml);
