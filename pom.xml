@@ -10,7 +10,7 @@
   <groupId>org.codehaus.sonar-plugins.toxicity-chart</groupId>
   <artifactId>sonar-toxicity-chart-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.3</version>
 
   <name>Sonar Toxicity Chart Plugin</name>
   <description>Create a Toxicity Chart based on metrics provided by checkstyle rules.</description>
@@ -38,7 +38,7 @@
     <connection>scm:git:git@github.com:SonarCommunity/sonar-toxicitychart.git</connection>
     <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-toxicitychart.git</developerConnection>
     <url>https://github.com/SonarCommunity/sonar-toxicitychart</url>
-    <tag>HEAD</tag>
+    <tag>sonar-toxicity-chart-plugin-0.3</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
