@@ -20,9 +20,8 @@
 
 package org.sonar.plugins.toxicity.model;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.Assert;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -20,7 +20,7 @@
 
 package org.sonar.plugins.toxicity;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.sonar.plugins.toxicity.model.DebtType;
 

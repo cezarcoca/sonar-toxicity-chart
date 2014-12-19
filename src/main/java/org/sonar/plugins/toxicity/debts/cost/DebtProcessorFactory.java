@@ -70,6 +70,16 @@ public final class DebtProcessorFactory {
   public static final String ANON_INNER_LENGTH_SQUID = "S1188";
   public static final String CLASS_FAN_OUT_COMPLEXITY_SQUID = "S1200";
 
+  /**
+   * C-sharp repository key.
+   */
+  public static final String PARAMETER_NUMBER_CSHARP = "S107";
+  public static final String CLASS_FAN_OUT_COMPLEXITY_CSHARP = "ClassCoupling";
+  public static final String BOOLEAN_EXPRESSION_COMPLEXITY_CSHARP = "S1067";
+  public static final String CYCLOMATIC_COMPLEXITY_CSHARP = "FunctionComplexity";
+  public static final String MISSING_SWITCH_DEFAULT_CSHARP = "SwitchWithoutDefault";
+  public static final String FILE_LENGTH_CSHARP = "FileLoc";
+
   private Map<String, DebtProcessor> ruleKeyDebtProcessorMap;
 
   public DebtProcessorFactory() {
@@ -84,6 +94,7 @@ public final class DebtProcessorFactory {
     List<DebtProcessor> debts = new ArrayList<DebtProcessor>();
     registerCheckStyleRules(constantCostProcessor, twoValuesCostProcessor, debts);
     registerSquidRules(constantCostProcessor, twoValuesCostProcessor, debts);
+    registerCsharpRules(constantCostProcessor, twoValuesCostProcessor, debts);
 
     Map<String, DebtProcessor> map = new HashMap<String, DebtProcessor>();
     for (DebtProcessor debt : debts) {
@@ -121,10 +132,19 @@ public final class DebtProcessorFactory {
     debts.add(new DebtProcessor(CYCLOMATIC_COMPLEXITY_CHECK_STYLE, twoValuesCostProcessor, DebtType.CYCLOMATIC_COMPLEXITY));
   }
 
+  private void registerCsharpRules(DebtCostProcessor constantCostProcessor, DebtCostProcessor twoValuesCostProcessor, List<DebtProcessor> debts) {
+    debts.add(new DebtProcessor(PARAMETER_NUMBER_CSHARP, twoValuesCostProcessor, DebtType.PARAMETER_NUMBER));
+    debts.add(new DebtProcessor(CLASS_FAN_OUT_COMPLEXITY_CSHARP, twoValuesCostProcessor, DebtType.CLASS_FAN_OUT_COMPLEXITY));
+    debts.add(new DebtProcessor(BOOLEAN_EXPRESSION_COMPLEXITY_CSHARP, twoValuesCostProcessor, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
+    debts.add(new DebtProcessor(CYCLOMATIC_COMPLEXITY_CSHARP, twoValuesCostProcessor, DebtType.CYCLOMATIC_COMPLEXITY));
+    debts.add(new DebtProcessor(MISSING_SWITCH_DEFAULT_CSHARP, constantCostProcessor, DebtType.MISSING_SWITCH_DEFAULT));
+    debts.add(new DebtProcessor(FILE_LENGTH_CSHARP, twoValuesCostProcessor, DebtType.FILE_LENGTH));
+  }
+
   public DebtProcessor getDebtProcessor(Issue issue) {
 
     Preconditions.checkNotNull(issue);
-
+    System.out.println(String.format("Issue key: %s - message: %s",issue.ruleKey().rule(), issue.message()));
     return ruleKeyDebtProcessorMap.get(issue.ruleKey().rule());
   }
 

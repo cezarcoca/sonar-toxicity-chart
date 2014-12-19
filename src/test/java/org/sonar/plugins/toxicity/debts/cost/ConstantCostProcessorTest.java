@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * @author ccoca
