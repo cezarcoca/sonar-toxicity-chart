@@ -144,7 +144,6 @@ public final class DebtProcessorFactory {
   public DebtProcessor getDebtProcessor(Issue issue) {
 
     Preconditions.checkNotNull(issue);
-    System.out.println(String.format("Issue key: %s - message: %s",issue.ruleKey().rule(), issue.message()));
     return ruleKeyDebtProcessorMap.get(issue.ruleKey().rule());
   }
 
