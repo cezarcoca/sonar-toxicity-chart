@@ -39,6 +39,7 @@ public class TwoValuesCostProcessorTest {
   private static final String MESSAGE_WITH_DEVISOR_EQUALS_ZERO = "Reduce the number of conditional operators (4) used in the expression (maximum allowed 0).";
   private static final String MESSAGE_NO_NUMERIC_VALUE = "Method length.";
   private static final String MESSAGE_ONE_NUMERIC_VALUE = "Method length is 44.";
+  private static final String MESSAGE_LARGE_VALUES = "This file has 90300 lines of code, which is greater than 50 authorized. Split it into smaller files.";
 
   @Test
   public void whenWellFormedMessageIsReceivedThenCorrectRatioIsCalculated() {
@@ -60,6 +61,14 @@ public class TwoValuesCostProcessorTest {
 
     new TwoValuesCostProcessor()
       .getCost(createIssue(MESSAGE_ONE_NUMERIC_VALUE));
+  }
+
+  @Test
+  public void whenMessageWithLargeValuesThenCostIsComputedCorrectly() {
+
+    assertTrue(new BigDecimal("1806")
+        .compareTo(new TwoValuesCostProcessor()
+            .getCost(createIssue(MESSAGE_LARGE_VALUES))) == 0);
   }
 
   @Test

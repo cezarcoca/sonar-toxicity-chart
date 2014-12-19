@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 class TwoValuesCostProcessor implements DebtCostProcessor {
 
-  private static final Pattern PATTERN = Pattern.compile("[0-9]{1,3}(,[0-9]{3})*");
+  private static final Pattern PATTERN = Pattern.compile("[0-9]{1,5}(,[0-9]{5})*");
   private static final int VALUE_INDEX = 0;
   private static final int REQUIRED_VALUE_INDEX = 1;
 
