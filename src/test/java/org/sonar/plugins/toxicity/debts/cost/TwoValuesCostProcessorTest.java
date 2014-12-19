@@ -20,7 +20,7 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.sonar.api.issue.Issue;
 
@@ -36,15 +36,16 @@ import static org.mockito.Mockito.when;
 public class TwoValuesCostProcessorTest {
 
   private static final String MESSAGE_TWO_NUMERIC_VALUE = "Method length is 44 lines (max allowed is 30).";
+  private static final String MESSAGE_WITH_DEVISOR_EQUALS_ZERO = "Reduce the number of conditional operators (4) used in the expression (maximum allowed 0).";
   private static final String MESSAGE_NO_NUMERIC_VALUE = "Method length.";
   private static final String MESSAGE_ONE_NUMERIC_VALUE = "Method length is 44.";
 
   @Test
   public void whenWellFormedMessageIsReceivedThenCorrectRatioIsCalculated() {
 
-    Assert.assertTrue(new BigDecimal("1.466667")
-      .compareTo(new TwoValuesCostProcessor()
-        .getCost(createIssue(MESSAGE_TWO_NUMERIC_VALUE))) == 0);
+    assertTrue(new BigDecimal("1.466667")
+        .compareTo(new TwoValuesCostProcessor()
+            .getCost(createIssue(MESSAGE_TWO_NUMERIC_VALUE))) == 0);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -59,6 +60,14 @@ public class TwoValuesCostProcessorTest {
 
     new TwoValuesCostProcessor()
       .getCost(createIssue(MESSAGE_ONE_NUMERIC_VALUE));
+  }
+
+  @Test
+  public void whenDivisorIsZeroThenCostIsZero() {
+
+    assertTrue("Cost is zero if devizor is zero", BigDecimal.ZERO
+        .compareTo(new TwoValuesCostProcessor()
+            .getCost(createIssue(MESSAGE_WITH_DEVISOR_EQUALS_ZERO))) == 0);
   }
 
   private Issue createIssue(String message) {

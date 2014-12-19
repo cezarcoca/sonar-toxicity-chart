@@ -20,6 +20,8 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.issue.Issue;
 
 import java.math.BigDecimal;
@@ -35,6 +37,8 @@ class TwoValuesCostProcessor implements DebtCostProcessor {
   private static final int VALUE_INDEX = 0;
   private static final int REQUIRED_VALUE_INDEX = 1;
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(TwoValuesCostProcessor.class);
+
   @Override
   public BigDecimal getCost(Issue issue) {
 
@@ -42,6 +46,11 @@ class TwoValuesCostProcessor implements DebtCostProcessor {
     if (params.size() < 2) {
       throw new IllegalArgumentException("Invalid message "
         + issue.message() + ". Two integral parameters was expected");
+    }
+
+    if(params.get(REQUIRED_VALUE_INDEX).compareTo(BigDecimal.ZERO) == 0) {
+      LOGGER.warn("Invalid devisor in message: {}", issue.message());
+      return  BigDecimal.ZERO;
     }
 
     return params.get(VALUE_INDEX).divide(params.get(REQUIRED_VALUE_INDEX),
