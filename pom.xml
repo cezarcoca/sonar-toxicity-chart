@@ -10,14 +10,15 @@
   <groupId>org.codehaus.sonar-plugins.toxicity-chart</groupId>
   <artifactId>sonar-toxicity-chart-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>0.4-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
 
   <name>Sonar Toxicity Chart Plugin</name>
   <description>Create a Toxicity Chart based on metrics provided by checkstyle rules.</description>
-  <url>http://docs.codehaus.org/display/SONAR/Toxicity+Chart+Plugin</url>
+  <url>https://github.com/cezarcoca/sonar-toxicity-chart</url>
   <inceptionYear>2012</inceptionYear>
   <organization>
     <name>Cezar Coca</name>
+    <url>https://github.com/cezarcoca/</url>
   </organization>
   <licenses>
     <license>
@@ -35,14 +36,14 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:SonarCommunity/sonar-toxicitychart.git</connection>
-    <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-toxicitychart.git</developerConnection>
-    <url>https://github.com/SonarCommunity/sonar-toxicitychart</url>
+    <connection>scm:git:git@github.com:cezarcoca/sonar-toxicity-chart.git</connection>
+    <developerConnection>scm:git:git@github.com:cezarcoca/sonar-toxicity-chart.git</developerConnection>
+    <url>https://github.com/cezarcoca/sonar-toxicity-chart.git</url>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
-    <system>JIRA</system>
-    <url>http://jira.codehaus.org/browse/SONARPLUGINS/component/15761</url>
+    <system>GITHUB</system>
+    <url>https://github.com/cezarcoca/sonar-toxicity-chart/issues</url>
   </issueManagement>
 
   <properties>
