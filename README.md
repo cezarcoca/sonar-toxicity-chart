@@ -78,18 +78,18 @@ Total of points accumulated due violation of all above rules divided by the numb
 
 The table below lists the **Squid** rules that should be enabled in order to generate the **Toxicity Chart**.
 
-| Issue                       | SonarQube Repository rule         | C#SonarQube Repository rule      | Level         |
-| -------------               | -------------                     | -------------                    | ------------- |
-|File Length	              | squid:S00104                      | csharpsquid:FileLoc              | file          |
-|Method Length	              | squid:S138	                      | -                                | method	     |
-|Cyclomatic Complexity        | squid:MethodCyclomaticComplexity  | csharpsquid:FunctionComplexity   | method	     |
-|Parameter Number	          | squid:S00107                      | csharpsquid:S107	             | method	     |
-|Boolean Expression Complexity| squid:S1067	                      | csharpsquid:S1067                | statement     |
-|Nested If Depth	          | squid:S134	                      | -                                | statement     |
-|Nested Try Depth	          | squid:S1141	                      | -                                | statement     |
-|Missing Switch Default	      | squid:SwitchLastCaseIsDefaultCheck| csharpsquid:SwitchWithoutDefault | statement     |
-|Class Fan Out Complexity	  | squid:S1200                       | csharpsquid:ClassCoupling        | class         |
-|Anon Inner Length	          | squid:S1188                       | -                                | inner class   |
+| Issue                       | SonarQube Repository rule         | C# SonarQube Repository rule     |
+| -------------               | -------------                     | -------------                    |
+|File Length	              | squid:S00104                      | csharpsquid:FileLoc              |
+|Method Length	              | squid:S138	                      | -                                |
+|Cyclomatic Complexity        | squid:MethodCyclomaticComplexity  | csharpsquid:FunctionComplexity   |
+|Parameter Number	          | squid:S00107                      | csharpsquid:S107	             |
+|Boolean Expression Complexity| squid:S1067	                      | csharpsquid:S1067                |
+|Nested If Depth	          | squid:S134	                      | -                                |
+|Nested Try Depth	          | squid:S1141	                      | -                                |
+|Missing Switch Default	      | squid:SwitchLastCaseIsDefaultCheck| csharpsquid:SwitchWithoutDefault |
+|Class Fan Out Complexity	  | squid:S1200                       | csharpsquid:ClassCoupling        |
+|Anon Inner Length	          | squid:S1188                       | -                                |
 
 If the number of classes that score more than one point is greater than 125, then the numbers on the X axis will overlap each other. In order to make the chart readable in this situation the **Toxicity Chart** threshold value can be changed in *Configuration > General Settings > Toxicity Chart* panel. The classes that have the score below the threshold value are left off the chart. The threshold value is not taken into account in toxicity metrics computing.
 
@@ -97,6 +97,6 @@ If the number of classes that score more than one point is greater than 125, the
 
 ## Supported Languages ##
 
-Java and C# projects
+**Java** and **C#** projects
 
 
