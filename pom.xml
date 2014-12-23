@@ -50,11 +50,11 @@
   <distributionManagement>
     <repository>
       <id>github-sonar-toxicity-chart</id>
-      <url>https://raw.github.com/cezarcoca/sonar-toxicity-chart/master/releases</url>
+      <url>https://github.com/cezarcoca/sonar-toxicity-chart/raw/master/releases</url>
     </repository>
     <snapshotRepository>
       <id>github-sonar-toxicity-chart</id>
-      <url>https://raw.github.com/cezarcoca/sonar-toxicity-chart/master/snapshots</url>
+      <url>https://github.com/cezarcoca/sonar-toxicity-chart/raw/master/snapshots</url>
     </snapshotRepository>
     <site>
       <id>github-sonar-toxicity-chart</id>
