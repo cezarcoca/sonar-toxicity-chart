@@ -1,3 +1,13 @@
+|**Name**           | Toxicity Chart Plugin                                                                                                 |
+|**License**        | [GNU LGPL 3](http://www.gnu.org/licenses/lgpl.txt)                                                                    |
+|**Author**         | Cezar Coca                                                                                                            |
+|**Issue tracker**  | [https://github.com/cezarcoca/sonar-toxicity-chart/issues](https://github.com/cezarcoca/sonar-toxicity-chart/issues)  |
+|**Sources**        | [https://github.com/cezarcoca/sonar-toxicity-chart](https://github.com/cezarcoca/sonar-toxicity-chart)                |
+
+| Version       | Date          | Description                           | SonarQube     |               |               |
+| ------------- | ------------- | -------------                         | ------------- | ------------- | ------------- |
+|1.0            | Jan 09, 2015  | Supports both, Java and C# languages  | 4.5.1+ (LTS)  | Release Notes | Download      |
+
 ## Description / Features ##
 
 This plugin is an implementation of the **Toxicity Chart** visualization technique presented by Erik Dörnenburg on his blog, [here](http://erik.doernenburg.com/2008/11/how-toxic-is-your-code/) and [here](http://erik.doernenburg.com/2013/06/toxicity-reloaded/). This technique is useful to quickly get an idea of the general quality of a large existing code base. **Toxicity Charts** stack multiple static analysis metrics for classes, methods, or components within an application, providing a combined *toxicity score* for each area of the code base. This can be extremely useful in helping managers and non-developers understand the internal quality of the code.
