@@ -1,3 +1,5 @@
+|                   |                                                                                                                       |
+| -------------     | -------------                                                                                                         |
 |**Name**           | Toxicity Chart Plugin                                                                                                 |
 |**License**        | [GNU LGPL 3](http://www.gnu.org/licenses/lgpl.txt)                                                                    |
 |**Author**         | Cezar Coca                                                                                                            |
