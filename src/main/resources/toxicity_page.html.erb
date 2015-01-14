@@ -206,14 +206,14 @@ div.tooltip {
 	var chart = d3.select("#toxicity_chart_area").append("svg")
 		.attr("class", "chart")
 		.attr("width", LEFTSPACE + (BWIDTH + BGAP) * classes.length + 10)
-		.attr("height", CHEIGHT + 5);
+		.attr("height", CHEIGHT + 15);
 
 	var xscale = d3.scale.linear()
 		.domain([0, classes.length])
 		.rangeRound([LEFTSPACE, (BWIDTH + BGAP) * classes.length + LEFTSPACE])
 
 	var yscale = d3.scale.linear()
-		.domain([0, Math.round(classes[0].total/10) * 10 + 1])
+		.domain([0, (Math.round(classes[0].total/10) + 1) * 10])
 		.rangeRound([CHEIGHT, 1]);
 
 	var yaxis = d3.svg.axis()
@@ -251,7 +251,11 @@ div.tooltip {
 	chart.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(" + LEFTSPACE + ", 0)")
-		.call(yaxis);
+		.call(yaxis)
+			.selectAll("text")
+			.attr("y", 6)
+			.attr("x", -25)
+			.style("text-anchor", "start");		
 
   })();
 </script>

@@ -13,7 +13,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <name>Sonar Toxicity Chart Plugin</name>
-    <description>Create a Toxicity Chart based on metrics provided by checkstyle rules.</description>
+    <description>Create a Toxicity Chart based on metrics provided by SonarQube rules.</description>
     <url>https://github.com/cezarcoca/sonar-toxicity-chart</url>
     <inceptionYear>2012</inceptionYear>
     <organization>
