@@ -4,11 +4,10 @@
 |**License**        | [GNU LGPL 3](http://www.gnu.org/licenses/lgpl.txt)                                                                    |
 |**Author**         | Cezar Coca                                                                                                            |
 |**Issue tracker**  | [https://github.com/cezarcoca/sonar-toxicity-chart/issues](https://github.com/cezarcoca/sonar-toxicity-chart/issues)  |
-|**Sources**        | [https://github.com/cezarcoca/sonar-toxicity-chart](https://github.com/cezarcoca/sonar-toxicity-chart)                |
 
 | Version       | Date          | Description                           | SonarQube     |               |               |
 | ------------- | ------------- | -------------                         | ------------- | ------------- | ------------- |
-|1.0            | Jan 09, 2015  | Supports both, Java and C# languages  | 4.5.1+ (LTS)  | Release Notes | Download      |
+|1.0            | Jan 09, 2015  | Supports both, Java and C# languages  | 4.5.1+ (LTS)  | [Release Notes](https://github.com/cezarcoca/sonar-toxicity-chart/wiki/Release-Notes) | Download      |
 
 ## Description / Features ##
 
@@ -110,5 +109,6 @@ If the number of classes that score more than one point is greater than 125, the
 ## Supported Languages ##
 
 **Java** and **C#** projects
+
 
 
