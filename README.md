@@ -7,7 +7,7 @@
 
 | Version       | Date          | Description                           | SonarQube     |               |               |
 | ------------- | ------------- | -------------                         | ------------- | ------------- | ------------- |
-|1.0            | Jan 09, 2015  | Supports both, Java and C# languages  | 4.5.1+ (LTS)  | [Release Notes](https://github.com/cezarcoca/sonar-toxicity-chart/wiki/Release-Notes) | Download      |
+|1.0            | Jan 09, 2015  | Supports both, Java and C# languages  | 4.5.1+ (LTS)  | [Release Notes](https://github.com/cezarcoca/sonar-toxicity-chart/wiki/Release-Notes) | [Download](http://central.maven.org/maven2/org/codehaus/sonar-plugins/toxicity-chart/sonar-toxicity-chart-plugin/1.0/sonar-toxicity-chart-plugin-1.0.jar)      |
 
 ## Description / Features ##
 
