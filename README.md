@@ -9,6 +9,35 @@
 | ------------- | ------------- | -------------                         | ------------- | ------------- | ------------- |
 |1.0            | Jan 09, 2015  | Supports both, Java and C# languages  | 4.5.1+ (LTS)  | [Release Notes](https://github.com/cezarcoca/sonar-toxicity-chart/wiki/Release-Notes) | [Download](http://central.maven.org/maven2/org/codehaus/sonar-plugins/toxicity-chart/sonar-toxicity-chart-plugin/1.0/sonar-toxicity-chart-plugin-1.0.jar)      |
 
+## Motivation ##
+
+Why is the quality of the code important? Firstly, it is important for economic reasons. For calculating the total cost of a software application, the following formula [[Bek071]](http://www.amazon.com/Implementation-Patterns-Kent-Beck/dp/0321413091) can be applied:
+
+    cost_total= cost_develop + cost_maintain
+
+Where the maintenance cost is made of:
+
+    cost_maintain = cost_understand + cost_change + cost_test + cost_deploy
+
+Since statistically it has been noticed that the balance of the maintenance cost greatly exceeds that of the development cost (as depicted in image below), it becomes obvious that the monitoring of the quality of the code in view of diminishing the maintenance costs represents a key factor in the realization of a long-lasting/ stable software system.
+
+![Software Life Cycle](https://4d7f3ccfc784b13605de2780f0f4bf21ee2162f6.googledrive.com/host/0B9tMA3RbZ5P_VS11Nk0yWkpNeXM/software_life_cycle_cost.jpg)
+
+source: [[Object-oriented and Classical Software Engineering]](http://books.google.ro/books/about/Object_oriented_and_Classical_Software_E.html?id=2C7oLcRdahQC&redir_esc=y)
+
+An obvious step to achieving cost effective maintenance includes selecting the appropriate maintenance strategy and monitor each of the 4 cost elements listed below:
+
+![Read vs Write code](https://4d7f3ccfc784b13605de2780f0f4bf21ee2162f6.googledrive.com/host/0B9tMA3RbZ5P_VS11Nk0yWkpNeXM/understanding_code.png)
+
+source: [[blog.codinghorror.com]](http://blog.codinghorror.com/when-understanding-means-rewriting/)
+
+- `cost_understand` Programs are read more often than they are written (see above image). Code communicates well when a reader can understand it, modify it, or use it.
+- `cost_change` Eliminating excess complexity and duplication enables those reading, using, and modifying programs to understand them more quickly and to change successfully in the future
+- `cost_test` Testable code is essential to lower maintenance costs
+- `cost_deploy` Continuous delivery practices help to drive down costs and reduce the risks
+
+
+
 ## Description / Features ##
 
 This plugin is an implementation of the **Toxicity Chart** visualization technique presented by Erik Dörnenburg on his blog, [here](http://erik.doernenburg.com/2008/11/how-toxic-is-your-code/) and [here](http://erik.doernenburg.com/2013/06/toxicity-reloaded/). This technique is useful to quickly get an idea of the general quality of a large existing code base. **Toxicity Charts** stack multiple static analysis metrics for classes, methods, or components within an application, providing a combined *toxicity score* for each area of the code base. This can be extremely useful in helping managers and non-developers understand the internal quality of the code.
