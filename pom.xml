@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.codehaus.sonar-plugins</groupId>
         <artifactId>parent</artifactId>
-        <version>18</version>
+        <version>19</version>
     </parent>
 
     <groupId>org.codehaus.sonar-plugins.toxicity-chart</groupId>
@@ -62,10 +62,11 @@
     </distributionManagement>
 
     <properties>
-        <sonar.version>4.5.1</sonar.version>
+        <sonar.version>5.0</sonar.version>
         <sonar.pluginName>Toxicity Chart</sonar.pluginName>
         <sonar.pluginClass>org.sonar.plugins.toxicity.ToxicityChartPlugin</sonar.pluginClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.min.version>1.7</jdk.min.version>
     </properties>
 
     <dependencies>
@@ -116,6 +117,15 @@
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${jdk.min.version}</source>
+                    <target>${jdk.min.version}</target>
                 </configuration>
             </plugin>
         </plugins>
