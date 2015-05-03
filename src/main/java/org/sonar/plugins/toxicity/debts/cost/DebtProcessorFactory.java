@@ -20,13 +20,18 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.issue.Issue;
 import org.sonar.plugins.toxicity.model.DebtType;
 
-import java.util.*;
+import com.google.common.base.Preconditions;
 
 /**
  * @author ccoca
@@ -75,10 +80,14 @@ public final class DebtProcessorFactory {
    */
   public static final String PARAMETER_NUMBER_CSHARP = "S107";
   public static final String CLASS_FAN_OUT_COMPLEXITY_CSHARP = "ClassCoupling";
+  public static final String CLASS_FAN_OUT_COMPLEXITY_FXCOP = "AvoidExcessiveClassCoupling";
   public static final String BOOLEAN_EXPRESSION_COMPLEXITY_CSHARP = "S1067";
   public static final String CYCLOMATIC_COMPLEXITY_CSHARP = "FunctionComplexity";
+  public static final String CYCLOMATIC_COMPLEXITY_FXCOP = "AvoidExcessiveComplexity";
   public static final String MISSING_SWITCH_DEFAULT_CSHARP = "SwitchWithoutDefault";
+  public static final String MISSING_SWITCH_DEFAULT_FXCOP = "S131";
   public static final String FILE_LENGTH_CSHARP = "FileLoc";
+  public static final String FILE_LENGTH_CSHARP_5 = "S104";
 
   private Map<String, DebtProcessor> ruleKeyDebtProcessorMap;
 
@@ -135,10 +144,14 @@ public final class DebtProcessorFactory {
   private void registerCsharpRules(DebtCostProcessor constantCostProcessor, DebtCostProcessor twoValuesCostProcessor, List<DebtProcessor> debts) {
     debts.add(new DebtProcessor(PARAMETER_NUMBER_CSHARP, twoValuesCostProcessor, DebtType.PARAMETER_NUMBER));
     debts.add(new DebtProcessor(CLASS_FAN_OUT_COMPLEXITY_CSHARP, twoValuesCostProcessor, DebtType.CLASS_FAN_OUT_COMPLEXITY));
+    debts.add(new DebtProcessor(CLASS_FAN_OUT_COMPLEXITY_FXCOP, twoValuesCostProcessor, DebtType.CLASS_FAN_OUT_COMPLEXITY));
     debts.add(new DebtProcessor(BOOLEAN_EXPRESSION_COMPLEXITY_CSHARP, twoValuesCostProcessor, DebtType.BOOLEAN_EXPRESSION_COMPLEXITY));
     debts.add(new DebtProcessor(CYCLOMATIC_COMPLEXITY_CSHARP, twoValuesCostProcessor, DebtType.CYCLOMATIC_COMPLEXITY));
+    debts.add(new DebtProcessor(CYCLOMATIC_COMPLEXITY_FXCOP, twoValuesCostProcessor, DebtType.CYCLOMATIC_COMPLEXITY));
     debts.add(new DebtProcessor(MISSING_SWITCH_DEFAULT_CSHARP, constantCostProcessor, DebtType.MISSING_SWITCH_DEFAULT));
+    debts.add(new DebtProcessor(MISSING_SWITCH_DEFAULT_FXCOP, constantCostProcessor, DebtType.MISSING_SWITCH_DEFAULT));
     debts.add(new DebtProcessor(FILE_LENGTH_CSHARP, twoValuesCostProcessor, DebtType.FILE_LENGTH));
+    debts.add(new DebtProcessor(FILE_LENGTH_CSHARP_5, twoValuesCostProcessor, DebtType.FILE_LENGTH));
   }
 
   public DebtProcessor getDebtProcessor(Issue issue) {
