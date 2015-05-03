@@ -20,7 +20,8 @@
 
 package org.sonar.plugins.toxicity;
 
-import com.google.common.annotations.VisibleForTesting;
+import java.io.UnsupportedEncodingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Decorator;
@@ -37,75 +38,76 @@ import org.sonar.plugins.toxicity.model.DebtType;
 import org.sonar.plugins.toxicity.model.Toxicity;
 import org.sonar.plugins.toxicity.xml.ToxicityXmlBuilder;
 
-import java.io.UnsupportedEncodingException;
+import com.google.common.annotations.VisibleForTesting;
 
 @DependsUpon(DecoratorBarriers.ISSUES_TRACKED)
 public class ToxicityChartDecorator implements Decorator {
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(ToxicityChartDecorator.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ToxicityChartDecorator.class);
 
-  private String projectKey;
-  private final ResourcePerspectives perspectives;
+    private String projectKey;
+    private final ResourcePerspectives perspectives;
 
-  public ToxicityChartDecorator(ResourcePerspectives perspectives) {
-    this.perspectives = perspectives;
-  }
-
-  @Override
-  public boolean shouldExecuteOnProject(Project project) {
-    projectKey = project.getKey();
-    return projectKey != null;
-  }
-
-  @Override
-  public void decorate(@SuppressWarnings("rawtypes") Resource resource,
-      DecoratorContext context) {
-
-    Issuable issuable = perspectives.as(Issuable.class, resource);
-    if(issuable != null) {
-      for (Issue issue : issuable.issues()) {
-        DebtsFilter.getInstance().filter(issue);
-      }
+    public ToxicityChartDecorator(ResourcePerspectives perspectives) {
+        this.perspectives = perspectives;
     }
 
-    if (allResourcesAreProcessed(resource)) {
-      saveMeasures(context);
-    }
-  }
-
-  @VisibleForTesting
-  boolean allResourcesAreProcessed(
-      @SuppressWarnings("rawtypes") Resource resource) {
-    return projectKey.equals(resource.getKey());
-  }
-
-  @VisibleForTesting
-  void saveMeasures(DecoratorContext context) {
-
-    LOGGER.info("Saving metrics for: {} project.", projectKey);
-
-    Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
-
-    context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_STATUS,
-        getToxicityAsXml(toxicity)));
-    context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE,
-            toxicity.getAverageCost()));
-
-    for (DebtType debt : DebtType.values()) {
-      context.saveMeasure(new Measure(ToxicityChartMetrics
-          .getMetricByDebtType(debt), toxicity.getTotalCostByDebt(debt).doubleValue()));
+    @Override
+    public boolean shouldExecuteOnProject(Project project) {
+        projectKey = project.getKey();
+        return projectKey != null;
     }
 
-    LOGGER.info("Metrics saved successfully.");
-  }
+    @Override
+    public void decorate(Resource resource, DecoratorContext context) {
 
-  private String getToxicityAsXml(Toxicity toxicity) {
-    try {
-      return new String(ToxicityXmlBuilder.convertToxicityToXml(toxicity), "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      LOGGER.error(e.getMessage(), e);
+        Issuable issuable = perspectives.as(Issuable.class, resource);
+        if (issuable != null) {
+            for (Issue issue : issuable.issues()) {
+                DebtsFilter.getInstance().filter(issue);
+            }
+        }
+
+        if (allResourcesAreProcessed(resource)) {
+            saveMeasures(context);
+        }
     }
-    return "";
-  }
+
+    @VisibleForTesting
+    boolean allResourcesAreProcessed(Resource resource) {
+        return projectKey.equals(resource.getKey());
+    }
+
+    @VisibleForTesting
+    void saveMeasures(DecoratorContext context) {
+
+        LOGGER.info("Saving metrics for: {} project.", projectKey);
+
+        Toxicity toxicity = DebtsFilter.getInstance().getToxicity();
+
+        context.saveMeasure(new Measure(ToxicityChartMetrics.TOXICITY_STATUS,
+                getToxicityAsXml(toxicity)));
+        context.saveMeasure(new Measure(
+                ToxicityChartMetrics.TOXICITY_AVERAGE_VALUE, toxicity
+                        .getAverageCost()));
+
+        for (DebtType debt : DebtType.values()) {
+            context.saveMeasure(new Measure(ToxicityChartMetrics
+                    .getMetricByDebtType(debt), toxicity.getTotalCostByDebt(
+                    debt).doubleValue()));
+        }
+
+        LOGGER.info("Metrics saved successfully.");
+    }
+
+    private String getToxicityAsXml(Toxicity toxicity) {
+        try {
+            return new String(
+                    ToxicityXmlBuilder.convertToxicityToXml(toxicity), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return "";
+    }
 }

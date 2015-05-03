@@ -20,10 +20,6 @@
 
 package org.sonar.plugins.toxicity.debts.cost;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.sonar.api.issue.Issue;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
@@ -31,42 +27,49 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sonar.api.issue.Issue;
+
 class TwoValuesCostProcessor implements DebtCostProcessor {
 
-  private static final Pattern PATTERN = Pattern.compile("[0-9]{1,5}(,[0-9]{5})*");
-  private static final int VALUE_INDEX = 0;
-  private static final int REQUIRED_VALUE_INDEX = 1;
+    private static final Pattern PATTERN = Pattern
+            .compile("[0-9]([,\\.]?[0-9])*");
+    private static final int VALUE_INDEX = 0;
+    private static final int REQUIRED_VALUE_INDEX = 1;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TwoValuesCostProcessor.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(TwoValuesCostProcessor.class);
 
-  @Override
-  public BigDecimal getCost(Issue issue) {
+    @Override
+    public BigDecimal getCost(Issue issue) {
 
-    List<BigDecimal> params = parseMessage(issue);
-    if (params.size() < 2) {
-      throw new IllegalArgumentException("Invalid message "
-        + issue.message() + ". Two integral parameters was expected");
+        List<BigDecimal> params = parseMessage(issue);
+        if (params.size() < 2) {
+            throw new IllegalArgumentException("Invalid message "
+                    + issue.message()
+                    + ". Two integral parameters was expected");
+        }
+
+        if (params.get(REQUIRED_VALUE_INDEX).compareTo(BigDecimal.ZERO) == 0) {
+            LOGGER.warn("Invalid devisor in message: {}", issue.message());
+            return BigDecimal.ZERO;
+        }
+
+        return params.get(VALUE_INDEX).divide(params.get(REQUIRED_VALUE_INDEX),
+                MathContext.DECIMAL32);
     }
 
-    if(params.get(REQUIRED_VALUE_INDEX).compareTo(BigDecimal.ZERO) == 0) {
-      LOGGER.warn("Invalid devisor in message: {}", issue.message());
-      return  BigDecimal.ZERO;
+    private List<BigDecimal> parseMessage(Issue issue) {
+
+        String message = issue.message();
+        Matcher matcher = PATTERN.matcher(message);
+
+        List<BigDecimal> params = new ArrayList<BigDecimal>();
+        while (matcher.find()) {
+            params.add(new BigDecimal(matcher.group().replace(",", "")));
+        }
+
+        return params;
     }
-
-    return params.get(VALUE_INDEX).divide(params.get(REQUIRED_VALUE_INDEX),
-      MathContext.DECIMAL32);
-  }
-
-  private List<BigDecimal> parseMessage(Issue issue) {
-
-    String message = issue.message();
-    Matcher matcher = PATTERN.matcher(message);
-
-    List<BigDecimal> params = new ArrayList<BigDecimal>();
-    while (matcher.find()) {
-      params.add(new BigDecimal(matcher.group().replace(",", "")));
-    }
-
-    return params;
-  }
 }

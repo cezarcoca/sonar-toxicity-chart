@@ -21,13 +21,13 @@
 package org.sonar.plugins.toxicity.debts.cost;
 
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-import org.sonar.api.issue.Issue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+import org.sonar.api.issue.Issue;
 
 /**
  * @author ccoca
@@ -35,54 +35,75 @@ import static org.mockito.Mockito.when;
  */
 public class TwoValuesCostProcessorTest {
 
-  private static final String MESSAGE_TWO_NUMERIC_VALUE = "Method length is 44 lines (max allowed is 30).";
-  private static final String MESSAGE_WITH_DEVISOR_EQUALS_ZERO = "Reduce the number of conditional operators (4) used in the expression (maximum allowed 0).";
-  private static final String MESSAGE_NO_NUMERIC_VALUE = "Method length.";
-  private static final String MESSAGE_ONE_NUMERIC_VALUE = "Method length is 44.";
-  private static final String MESSAGE_LARGE_VALUES = "This file has 90300 lines of code, which is greater than 50 authorized. Split it into smaller files.";
+    private static final String MESSAGE_TWO_NUMERIC_VALUE = "Method length is 44 lines (max allowed is 30).";
+    private static final String MESSAGE_WITH_DEVISOR_EQUALS_ZERO = "Reduce the number of conditional operators (4) used in the expression (maximum allowed 0).";
+    private static final String MESSAGE_NO_NUMERIC_VALUE = "Method length.";
+    private static final String MESSAGE_ONE_NUMERIC_VALUE = "Method length is 44.";
+    private static final String MESSAGE_LARGE_VALUES = "This file has 90300 lines of code, which is greater than 50 authorized. Split it into smaller files.";
+    private static final String MESSAGE_LARGE_VALUES_WITH_COMMA_AS_THOUSANDS_SEPARATOR = "This file has 1,266 lines, which is greater than 1,000 authorized. Split it into smaller files.";
+    private static final String MESSAGE_LARGE_VALUES_WITH_DOT_AS_THOUSANDS_SEPARATOR = "This file has 1.266 lines, which is greater than 1.000 authorized. Split it into smaller files.";
 
-  @Test
-  public void whenWellFormedMessageIsReceivedThenCorrectRatioIsCalculated() {
+    @Test
+    public void whenWellFormedMessageIsReceivedThenCorrectRatioIsCalculated() {
 
-    assertTrue(new BigDecimal("1.466667")
-        .compareTo(new TwoValuesCostProcessor()
-            .getCost(createIssue(MESSAGE_TWO_NUMERIC_VALUE))) == 0);
-  }
+        assertTrue(new BigDecimal("1.466667")
+                .compareTo(new TwoValuesCostProcessor()
+                        .getCost(createIssue(MESSAGE_TWO_NUMERIC_VALUE))) == 0);
+    }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void whenMessageWithNoNumericValueIsReceivedThenIllegalArgumentExceptionIsThrown() {
+    @Test(expected = IllegalArgumentException.class)
+    public void whenMessageWithNoNumericValueIsReceivedThenIllegalArgumentExceptionIsThrown() {
 
-    new TwoValuesCostProcessor()
-      .getCost(createIssue(MESSAGE_NO_NUMERIC_VALUE));
-  }
+        new TwoValuesCostProcessor()
+                .getCost(createIssue(MESSAGE_NO_NUMERIC_VALUE));
+    }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void whenMessageWithOneNumericValueIsReceivedThenIllegalArgumentExceptionIsThrown() {
+    @Test(expected = IllegalArgumentException.class)
+    public void whenMessageWithOneNumericValueIsReceivedThenIllegalArgumentExceptionIsThrown() {
 
-    new TwoValuesCostProcessor()
-      .getCost(createIssue(MESSAGE_ONE_NUMERIC_VALUE));
-  }
+        new TwoValuesCostProcessor()
+                .getCost(createIssue(MESSAGE_ONE_NUMERIC_VALUE));
+    }
 
-  @Test
-  public void whenMessageWithLargeValuesThenCostIsComputedCorrectly() {
+    @Test
+    public void whenMessageWithLargeValuesThenCostIsComputedCorrectly() {
 
-    assertTrue(new BigDecimal("1806")
-        .compareTo(new TwoValuesCostProcessor()
-            .getCost(createIssue(MESSAGE_LARGE_VALUES))) == 0);
-  }
+        assertTrue(new BigDecimal("1806")
+                .compareTo(new TwoValuesCostProcessor()
+                        .getCost(createIssue(MESSAGE_LARGE_VALUES))) == 0);
+    }
 
-  @Test
-  public void whenDivisorIsZeroThenCostIsZero() {
+    @Test
+    public void whenDivisorIsZeroThenCostIsZero() {
 
-    assertTrue("Cost is zero if devizor is zero", BigDecimal.ZERO
-        .compareTo(new TwoValuesCostProcessor()
-            .getCost(createIssue(MESSAGE_WITH_DEVISOR_EQUALS_ZERO))) == 0);
-  }
+        assertTrue(
+                "Cost is zero if devizor is zero",
+                BigDecimal.ZERO.compareTo(new TwoValuesCostProcessor()
+                        .getCost(createIssue(MESSAGE_WITH_DEVISOR_EQUALS_ZERO))) == 0);
+    }
 
-  private Issue createIssue(String message) {
+    @Test
+    public void shouldSupportCommaThousandsSeparator() {
 
-    Issue issue = mock(Issue.class);
-    when(issue.message()).thenReturn(message);
-    return issue;
-  }
+        assertTrue(
+                "Cost is zero if devizor is zero",
+                new BigDecimal("1.266").compareTo(new TwoValuesCostProcessor()
+                        .getCost(createIssue(MESSAGE_LARGE_VALUES_WITH_COMMA_AS_THOUSANDS_SEPARATOR))) == 0);
+    }
+
+    @Test
+    public void shouldSupportDotThousandsSeparator() {
+
+        assertTrue(
+                "Cost is zero if devizor is zero",
+                new BigDecimal("1.266").compareTo(new TwoValuesCostProcessor()
+                        .getCost(createIssue(MESSAGE_LARGE_VALUES_WITH_DOT_AS_THOUSANDS_SEPARATOR))) == 0);
+    }
+
+    private Issue createIssue(String message) {
+
+        Issue issue = mock(Issue.class);
+        when(issue.message()).thenReturn(message);
+        return issue;
+    }
 }
