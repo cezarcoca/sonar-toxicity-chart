@@ -119,18 +119,18 @@ Total of points accumulated due violation of all above rules divided by the numb
 
 The table below lists the **Squid** rules that should be enabled in order to generate the **Toxicity Chart**.
 
-| Issue                       | SonarQube Repository rule   | C# SonarQube Repository rule |
-| -------------               | -------------               | -------------                |
-|File Length	              | S00104                      | FileLoc or S104                    |
-|Method Length	              | S138	                    | -                            |
-|Cyclomatic Complexity        | MethodCyclomaticComplexity  | FunctionComplexity or AvoidExcessiveComplexity           |
-|Parameter Number	          | S00107                      | S107	                       |
-|Boolean Expression Complexity| S1067	                    | S1067                        |
-|Nested If Depth	          | S134	                    | -                            |
-|Nested Try Depth	          | S1141	                    | -                            |
-|Missing Switch Default	      | SwitchLastCaseIsDefaultCheck| SwitchWithoutDefault or S131         |
-|Class Fan Out Complexity	  | S1200                       | ClassCoupling or AvoidExcessiveClassCoupling               |
-|Anon Inner Length	          | S1188                       | -                            |
+| Issue                       | SonarQube Repository rule   | C# SonarQube Repository rule                 |
+| -------------               | -------------               | -------------                                |
+|File Length	              | S00104                      | FileLoc (4.5.x) or S104 (5.x)                |
+|Method Length	              | S138	                    | -                                            |
+|Cyclomatic Complexity        | MethodCyclomaticComplexity  | FunctionComplexity (4.5.x) or S1541 (5.x)    |
+|Parameter Number	          | S00107                      | S107	                                       |
+|Boolean Expression Complexity| S1067	                    | S1067                                        |
+|Nested If Depth	          | S134	                    | -                                            |
+|Nested Try Depth	          | S1141	                    | -                                            |
+|Missing Switch Default	      | SwitchLastCaseIsDefaultCheck| SwitchWithoutDefault (4.5.x) or S131 (5.x)   |
+|Class Fan Out Complexity	  | S1200                       | ClassCoupling or AvoidExcessiveClassCoupling |
+|Anon Inner Length	          | S1188                       | -                                            |
 
 If the number of classes that score more than one point is greater than 125, then the numbers on the X axis will overlap each other. In order to make the chart readable in this situation the **Toxicity Chart** threshold value can be changed in *Configuration > General Settings > Toxicity Chart* panel. The classes that have the score below the threshold value are left off the chart. The threshold value is not taken into account in toxicity metrics computing.
 
