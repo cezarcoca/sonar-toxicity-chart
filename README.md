@@ -57,7 +57,7 @@ In a **Toxicity Chart** each bar represents a class and the height of the bar sh
 
 For example if the Method Length metric has a threshold of **30** and a class comprises three methods, one that is **25** lines, one that is **45** lines and another that is **60** lines long, then the score is calculated to be proportional to the length of the method in relation to the threshold and for the given scenario the class gets **1.5 + 2 = 3.5** points.
 
-## Axes of quality ##
+## Axes of Quality ##
 
 All the metrics are computed using the approach presented above.
 
@@ -116,6 +116,7 @@ Total of points accumulated due violation of all above rules divided by the numb
 
 1. Make sure the **SonarQube / C# SonarQube Rules** listed below are enabled in your profile and that the threshold values are set appropriately.
 2. Launch a new quality analysis to calculate the metrics.
+3. Add the widget "Toxicity Chart" available under the category "Technical Debt" in your dashboard to see the results.
 
 The table below lists the **Squid** rules that should be enabled in order to generate the **Toxicity Chart**.
 
