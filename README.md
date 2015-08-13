@@ -116,7 +116,7 @@ Total of points accumulated due violation of all above rules divided by the numb
 
 1. Make sure the **SonarQube / C# SonarQube Rules** listed below are enabled in your profile and that the threshold values are set appropriately.
 2. Launch a new quality analysis to calculate the metrics.
-3. Add the widget "Toxicity Chart" available under the category "Technical Debt" in your dashboard to see the results
+3. Add the widget "Toxicity Chart" available under the category "Technical Debt" in your dashboard to see the results.
 
 The table below lists the **Squid** rules that should be enabled in order to generate the **Toxicity Chart**.
 
